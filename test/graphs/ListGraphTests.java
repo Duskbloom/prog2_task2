@@ -88,4 +88,49 @@ public class ListGraphTests {
     graph.connect(s1, s2, "Båt", 5);
 
   }
+
+  @Test
+  public void setWeightOfConnection(){
+    Stad s1 = new Stad("Stad1");
+    Stad s2 = new Stad("Stad2");
+
+    graph.add(s1);
+    graph.add(s2);
+
+    graph.connect(s1, s2, "Båt", 5);
+    graph.setConnectionWeight(s1, s2, 3);
+
+    assertEquals(3, graph.getEdgeBetween(s1, s2).getWeight());
+  }
+
+  @Test(expected=NoSuchElementException.class)
+  public void setWeightNoConnection(){
+    Stad s1 = new Stad("Stad1");
+    Stad s2 = new Stad("Stad2");
+
+    graph.add(s1);
+    graph.add(s2);
+
+    graph.setConnectionWeight(s1, s2, 3);
+  }
+
+  @Test(expected=NoSuchElementException.class)
+  public void setWeightWithoutNodesInGraph(){
+    Stad s1 = new Stad("Stad1");
+    Stad s2 = new Stad("Stad2");
+
+    graph.setConnectionWeight(s1, s2, 3);
+  }
+
+  @Test(expected=IllegalArgumentException.class)
+  public void setNegativeWeight(){
+    Stad s1 = new Stad("Stad1");
+    Stad s2 = new Stad("Stad2");
+
+    graph.add(s1);
+    graph.add(s2);
+
+    graph.connect(s1, s2, "Båt", 5);
+    graph.setConnectionWeight(s1, s2, -3);
+  }
 }

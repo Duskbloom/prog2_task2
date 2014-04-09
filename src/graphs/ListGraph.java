@@ -48,6 +48,7 @@ class ListGraph {
     return besökta.contains(to);
   }
 
+
   private void dfs2(Stad where, Stad fromWhere, Set<Stad> besökta, Map<Stad, Stad> via){
     besökta.add(where);
     via.put(where, fromWhere);
@@ -77,6 +78,25 @@ class ListGraph {
       if(e.getDestination().equals(to))
         return e;
     return null;
+  }
+
+  public void setConnectionWeight(Stad from, Stad to, int weight){
+    if(!data.keySet().contains(from) && !data.keySet().contains(to)){
+      throw new NoSuchElementException("En eller båda av noderna existerar inte i grafen");
+    }
+
+    if(weight < 0){
+      throw new IllegalArgumentException("vikt får inte vara mindre än 0");
+    }
+
+    Edge edge1 = getEdgeBetween(from, to);
+    Edge edge2 = getEdgeBetween(to, from);
+    if(edge1 != null && edge2 != null){
+      edge1.setWeight(weight);
+      edge2.setWeight(weight);
+    }else{
+      throw new NoSuchElementException("Det existerar ingen anslutning mellan städerna");
+    }
   }
 
   public int count(){
