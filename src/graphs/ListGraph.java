@@ -32,6 +32,9 @@ class ListGraph {
   }
 
   public List<Edge> getEdgesFrom(Stad stad){
+    List<Edge> edges = data.get(stad);
+    if(edges == null)
+      throw new NoSuchElementException("Element was not found in graph");
     return new ArrayList<Edge>(data.get(stad)); //ta hand om nullpointerexception
   }
 
@@ -74,6 +77,8 @@ class ListGraph {
   }
 
   public Edge getEdgeBetween(Stad from, Stad to){
+    if(!data.containsKey(from) || !data.containsKey(to))
+      throw new NoSuchElementException("One of the nodes does not exist in the graph");
     for (Edge e : data.get(from))
       if(e.getDestination().equals(to))
         return e;

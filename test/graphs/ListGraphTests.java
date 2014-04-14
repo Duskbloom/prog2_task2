@@ -133,4 +133,67 @@ public class ListGraphTests {
     graph.connect(s1, s2, "Båt", 5);
     graph.setConnectionWeight(s1, s2, -3);
   }
+
+  @Test
+  public void getNodesReturnsAListOfNodes(){
+    Stad s1 = new Stad("Stad1");
+    graph.add(s1);
+    assertEquals(s1, graph.getNodes().get(0));
+  }
+
+  @Test
+  public void getEdgesForNodeReturnsAllEdges(){
+    Stad s1 = new Stad("Stad1");
+    Stad s2 = new Stad("Stad2");
+    Stad s3 = new Stad("Stad3");
+
+    graph.add(s1);
+    graph.add(s2);
+    graph.add(s3);
+
+    graph.connect(s1, s2, "Båt", 5);
+
+    assertEquals(1, graph.getEdgesFrom(s1).size());
+
+    graph.connect(s1,s3, "Bil", 6);
+
+    assertEquals(2, graph.getEdgesFrom(s1).size());
+  }
+
+  @Test(expected=NoSuchElementException.class)
+  public void getEdgesForNodeThrowsErrorIfNodeIsNotInGraph(){
+    Stad s1 = new Stad("Stad1");
+    graph.getEdgesFrom(s1);
+  }
+
+  @Test
+  public void getEdgeBetweenReturnEdgeConnectingGivenNodes(){
+    Stad s1 = new Stad("Stad1");
+    Stad s2 = new Stad("Stad2");
+
+    graph.add(s1);
+    graph.add(s2);
+
+    graph.connect(s1, s2, "Båt", 5);
+    assertEquals(s2, graph.getEdgeBetween(s1, s2).getDestination());
+  }
+
+  @Test
+  public void getEdgeBetweenReturnsNullIfNoConnection(){
+    Stad s1 = new Stad("Stad1");
+    Stad s2 = new Stad("Stad2");
+
+    graph.add(s1);
+    graph.add(s2);
+
+    assertEquals(null, graph.getEdgeBetween(s1, s2));
+  }
+
+  @Test(expected=NoSuchElementException.class)
+  public void getEdgeBetweenThrowsExceptionIfNodesAreNotInGraph(){
+    Stad s1 = new Stad("Stad1");
+    Stad s2 = new Stad("Stasd2");
+
+    graph.getEdgeBetween(s1,s2);
+  }
 }
