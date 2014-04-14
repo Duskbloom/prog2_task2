@@ -3,6 +3,7 @@ package graphs;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.*;
+import java.io.*;
 
 import javax.swing.*;
 
@@ -90,16 +91,20 @@ public class MainWindow extends JFrame implements ActionListener{
 
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == newMenuItem){
+      
     }
     if (e.getSource() == openMenuItem){
-        int returnVal = fc.showOpenDialog(this);
+      int returnVal = fc.showOpenDialog(this);
+      load(fc.getSelectedFile());
     }
     if (e.getSource() == saveMenuItem){
+      save(fc.getSelectedFile());
     }
     if (e.getSource() == saveAsMenuItem){
       int returnVal = fc.showSaveDialog(this);
     }
     if (e.getSource() == exitMenuItem){
+      //kolla om sparat
       System.exit(0);
     }
     
@@ -114,7 +119,40 @@ public class MainWindow extends JFrame implements ActionListener{
     if (e.getSource() == changeConnectionMI || e.getSource() == changeConnectionB){
     }
   }
-  
-  
+
+  @SuppressWarnings("unchecked")
+  private static <T> T load(File file) {
+    try {
+      FileInputStream f_in = new FileInputStream(file);
+      ObjectInputStream o_in = new ObjectInputStream(f_in);
+      Object read = o_in.readObject();
+      o_in.close();
+      f_in.close();
+      return (T) read;
+      } catch (FileNotFoundException e) {
+          System.out.println(file + " not found");
+      } catch (IOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+      } catch (ClassNotFoundException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+      }    
+    return null;
+  }
+
+  private  void save(File file) {
+    try {
+        FileOutputStream f_out = new FileOutputStream(file);
+        ObjectOutputStream o_out = new ObjectOutputStream(f_out);
+        //o_out.writeObject(saveObject); Hur ska vi samla sparinfo?
+        o_out.close();
+        f_out.close();
+      } catch (FileNotFoundException e) {
+      } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+      }
+  }
   
 }
