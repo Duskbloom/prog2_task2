@@ -1,16 +1,16 @@
 package graphs;
-class Edge { //båge
-  private Stad dest;
+class Edge<T> {
+  private T dest;
   private String namn;
   private int weight;
   
-  public Edge(Stad dest, String namn, int weight){
+  public Edge(T dest, String namn, int weight){
     this.dest = dest;
     this.namn = namn;
     this.weight = weight;
   }
   
-  public Stad getDestination(){
+  public T getDestination(){
     return dest;
   }
 
