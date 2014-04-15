@@ -51,7 +51,6 @@ class ListGraph<T> implements Graph<T> {
     return visited.contains(to);
   }
 
-
   private void dfs2(T where, T fromWhere, Set<T> visited, Map<T, T> via){
     visited.add(where);
     via.put(where, fromWhere);
