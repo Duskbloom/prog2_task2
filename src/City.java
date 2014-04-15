@@ -1,8 +1,8 @@
 
-public class Stad {
+public class City {
   private String namn;
   
-  Stad(String namn){
+  City(String namn){
     this.namn = namn;
   }
   

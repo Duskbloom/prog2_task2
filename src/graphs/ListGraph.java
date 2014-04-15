@@ -1,7 +1,7 @@
 package graphs;
 import java.util.*;
 
-class ListGraph<T> implements Graph<T> {
+public class ListGraph<T> implements Graph<T> {
   private Map<T, List<Edge<T>>> data = new HashMap<T, List<Edge<T>>>();
 
   public void add(T item){
