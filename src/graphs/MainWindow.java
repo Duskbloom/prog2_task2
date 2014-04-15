@@ -6,25 +6,41 @@ import java.awt.event.*;
 import java.io.*;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class MainWindow extends JFrame implements ActionListener{
   
   private JMenuItem newMenuItem, openMenuItem, saveMenuItem, saveAsMenuItem, exitMenuItem, findPathMI, showConnectionMI, newPlaceMI, newConnectionMI, changeConnectionMI;
   private JButton findPathB, showConnectionB, newPlaceB, newConnectionB, changeConnectionB;
   private final JFileChooser fc = new JFileChooser();
+  Graph graph;
+  MapPanel p;
+  
+  String imageName;// = fc.getSelectedFile().getAbsolutePath();
   
   public MainWindow(){
     super("PathFinder");
     setJMenuBar(buildMenuPanel());
     add(buildButtonPanel(), BorderLayout.NORTH);
-    setSize(600, 500);
-    setLocation(400, 50);
+    //add(p = new MapPanel(imageName), BorderLayout.CENTER);
+    pack();
+    setLocationRelativeTo(null);
     setVisible(true);
     setDefaultCloseOperation(EXIT_ON_CLOSE);
   }
   
+  private JPanel buildMapPanel() {
+    JPanel panel = new JPanel();
+    return panel;
+  }
+
   private JPanel buildButtonPanel() {
     JPanel panel = new JPanel();
+    
+    FileNameExtensionFilter fnef = new FileNameExtensionFilter("Bilder", "jpg", "png", "gif");
+    FileNameExtensionFilter fnef2 = new FileNameExtensionFilter("Kartor", "map");
+    fc.addChoosableFileFilter(fnef);
+    fc.addChoosableFileFilter(fnef2);
     
     findPathB = new JButton("Hitta väg");
     showConnectionB = new JButton("Visa förbindelse");
@@ -91,11 +107,20 @@ public class MainWindow extends JFrame implements ActionListener{
 
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == newMenuItem){
-      
+      graph = new ListGraph<Stad>();
     }
     if (e.getSource() == openMenuItem){
-      int returnVal = fc.showOpenDialog(this);
+      int answer = fc.showOpenDialog(MainWindow.this);
+      if(answer != JFileChooser.APPROVE_OPTION)
+        return;
       load(fc.getSelectedFile());
+      String fnamn = fc.getSelectedFile().getAbsolutePath();//fast skaffa bildfilen och inte sökvägen??
+      if(p!=null)
+        remove(p);
+      p = new MapPanel(fnamn);
+      add(p);
+      validate();
+      pack();
     }
     if (e.getSource() == saveMenuItem){
       save(fc.getSelectedFile());
@@ -113,12 +138,17 @@ public class MainWindow extends JFrame implements ActionListener{
     if (e.getSource() == showConnectionMI || e.getSource() == showConnectionB){
     }
     if (e.getSource() == newPlaceMI || e.getSource() == newPlaceB){
+      //klicka var den ska hamna, rita en cirkel fär
+      showNewPlaceForm(form);
+      graph.add(item);
     }
     if (e.getSource() == newConnectionMI || e.getSource() == newConnectionB){
     }
     if (e.getSource() == changeConnectionMI || e.getSource() == changeConnectionB){
     }
   }
+  
+  private void showNewPlaceForm
 
   @SuppressWarnings("unchecked")
   private static <T> T load(File file) {
@@ -154,5 +184,7 @@ public class MainWindow extends JFrame implements ActionListener{
       e.printStackTrace();
       }
   }
+  
+  
   
 }
