@@ -1,17 +1,17 @@
 package graphs;
 import java.util.*;
 
-class ListGraph {
-  private Map<Stad, List<Edge>> data = new HashMap<Stad, List<Edge>>();
+class ListGraph<T> implements Graph<T> {
+  private Map<T, List<Edge<T>>> data = new HashMap<T, List<Edge<T>>>();
 
-  public void add(Stad ny){
-    if(!data.containsKey(ny))
-      data.put(ny, new ArrayList<Edge>() ); //eller throw exception
+  public void add(T item){
+    if(!data.containsKey(item))
+      data.put(item, new ArrayList<Edge<T>>() ); //eller throw exception
   }
 
-  public void connect(Stad from, Stad to, String namn, int vikt){
-    List<Edge> fromRoads = data.get(from);
-    List<Edge> toRoads = data.get(to);
+  public void connect(T from, T to, String namn, int vikt){
+    List<Edge<T>> fromRoads = data.get(from);
+    List<Edge<T>> toRoads = data.get(to);
 
     if(fromRoads == null || toRoads == null)
       throw new NoSuchElementException("Stad finns ej vid connect");
@@ -20,55 +20,55 @@ class ListGraph {
     if(pathExists(from, to))
       throw new IllegalStateException("Det finns redan en förbindelse mellan noderna");
 
-    Edge e1 = new Edge(to, namn, vikt);
+    Edge<T> e1 = new Edge<T>(to, namn, vikt);
     fromRoads.add(e1);
 
-    Edge e2 = new Edge(from, namn, vikt);
+    Edge<T> e2 = new Edge<T>(from, namn, vikt);
     toRoads.add(e2);
   }
 
-  public List<Stad> getNodes(){
-    return new ArrayList<Stad> (data.keySet()); 
+  public List<T> getNodes(){
+    return new ArrayList<T> (data.keySet()); 
   }
 
-  public List<Edge> getEdgesFrom(Stad stad){
-    List<Edge> edges = data.get(stad);
+  public List<Edge<T>> getEdgesFrom(T item){
+    List<Edge<T>> edges = data.get(item);
     if(edges == null)
       throw new NoSuchElementException("Element was not found in graph");
-    return new ArrayList<Edge>(data.get(stad)); //ta hand om nullpointerexception
+    return new ArrayList<Edge<T>>(data.get(item));
   }
 
-  private void dfs(Stad where, Set<Stad> besökta){
-    besökta.add(where);
-    for(Edge e : data.get(where))
-      if(!besökta.contains(e.getDestination()))
-        dfs(e.getDestination(), besökta);
+  private void dfs(T where, Set<T> visited){
+    visited.add(where);
+    for(Edge<T> e : data.get(where))
+      if(!visited.contains(e.getDestination()))
+        dfs(e.getDestination(), visited);
   }
 
-  public boolean pathExists(Stad from, Stad to){
-    Set<Stad> besökta = new HashSet<Stad>();
-    dfs(from, besökta);
-    return besökta.contains(to);
+  public boolean pathExists(T from, T to){
+    Set<T> visited = new HashSet<T>();
+    dfs(from, visited);
+    return visited.contains(to);
   }
 
 
-  private void dfs2(Stad where, Stad fromWhere, Set<Stad> besökta, Map<Stad, Stad> via){
-    besökta.add(where);
+  private void dfs2(T where, T fromWhere, Set<T> visited, Map<T, T> via){
+    visited.add(where);
     via.put(where, fromWhere);
-    for(Edge e : data.get(where))
-      if(!besökta.contains(e.getDestination()))
-        dfs2(e.getDestination(), where, besökta, via);
+    for(Edge<T> e : data.get(where))
+      if(!visited.contains(e.getDestination()))
+        dfs2(e.getDestination(), where, visited, via);
   }
 
-  public List<Edge> getAnyPath(Stad from, Stad to){
-    Map<Stad, Stad> via = new HashMap();
-    Set<Stad> besökta = new HashSet<Stad>();
+  public List<Edge<T>> getAnyPath(T from, T to){
+    Map<T, T> via = new HashMap<T, T>();
+    Set<T> besökta = new HashSet<T>();
     dfs2(from, null, besökta, via);
-    List<Edge> vägen = new ArrayList<Edge>();
-    Stad where = to;
+    List<Edge<T>> vägen = new ArrayList<Edge<T>>();
+    T where = to;
     while(!where.equals(from)){
-      Stad whereFrom = via.get(where);
-      Edge e = getEdgeBetween(whereFrom, where);
+      T whereFrom = via.get(where);
+      Edge<T> e = getEdgeBetween(whereFrom, where);
       vägen.add(e);
       where = whereFrom;
     }
@@ -76,16 +76,16 @@ class ListGraph {
     return vägen;
   }
 
-  public Edge getEdgeBetween(Stad from, Stad to){
+  public Edge<T> getEdgeBetween(T from, T to){
     if(!data.containsKey(from) || !data.containsKey(to))
       throw new NoSuchElementException("One of the nodes does not exist in the graph");
-    for (Edge e : data.get(from))
+    for (Edge<T> e : data.get(from))
       if(e.getDestination().equals(to))
         return e;
     return null;
   }
 
-  public void setConnectionWeight(Stad from, Stad to, int weight){
+  public void setConnectionWeight(T from, T to, int weight){
     if(!data.keySet().contains(from) && !data.keySet().contains(to)){
       throw new NoSuchElementException("En eller båda av noderna existerar inte i grafen");
     }
@@ -94,8 +94,8 @@ class ListGraph {
       throw new IllegalArgumentException("vikt får inte vara mindre än 0");
     }
 
-    Edge edge1 = getEdgeBetween(from, to);
-    Edge edge2 = getEdgeBetween(to, from);
+    Edge<T> edge1 = getEdgeBetween(from, to);
+    Edge<T> edge2 = getEdgeBetween(to, from);
     if(edge1 != null && edge2 != null){
       edge1.setWeight(weight);
       edge2.setWeight(weight);
@@ -111,9 +111,9 @@ class ListGraph {
   public String toString(){
     String str = "";
 
-    for(Map.Entry<Stad, List<Edge>> me : data.entrySet()){
-      Stad staden = me.getKey();
-      List<Edge> bågar = me.getValue();
+    for(Map.Entry<T, List<Edge<T>>> me : data.entrySet()){
+      T staden = me.getKey();
+      List<Edge<T>> bågar = me.getValue();
       str +=  staden + ": " + bågar.toString() + "\n";
     }
     return str;
