@@ -20,7 +20,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
   private File file;
   private ImageIcon bild = new ImageIcon();
   private MapPanel map;
-  //private Marker<City> m1, m2;
+  private Marker<City> m1, m2;
 
   public MainWindow(){
     super("PathFinder");
@@ -134,7 +134,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     }
     if (e.getSource() == saveMenuItem){
       fc.setFileFilter(mapFilter);
-      save(fc.getSelectedFile());
+      save(graph);
     }
     if (e.getSource() == saveAsMenuItem){
       int returnVal = fc.showSaveDialog(this);
@@ -156,11 +156,24 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
       map.setActive(true);
     }
     if (e.getSource() == newConnectionMI || e.getSource() == newConnectionB){
-    }
+      NewConnectionForm form = new NewConnectionForm();
+      showNewConnectionForm(form);
+      }
+      //
     if (e.getSource() == changeConnectionMI || e.getSource() == changeConnectionB){
+      
     }
   }
   
+private void showNewConnectionForm(NewConnectionForm form){
+  int result = JOptionPane.showConfirmDialog(null, form, "Ny förbindelse", JOptionPane.OK_CANCEL_OPTION, JOptionPane.NO_OPTION);
+  if(result == JOptionPane.OK_OPTION){
+    if(form.isValidForm())    
+      graph.connect(m1.getItem(), m2.getItem(), form.getName(), form.getTime());
+    else
+      showNewConnectionForm(form);
+  }
+}
 
   @SuppressWarnings("unchecked")
   private static <T> T load(File file) {
@@ -183,18 +196,24 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     return null;
   }
 
-  private  void save(File file) {
-    try {
-        FileOutputStream f_out = new FileOutputStream(file);
-        ObjectOutputStream o_out = new ObjectOutputStream(f_out);
-        //o_out.writeObject(saveObject); Hur ska vi samla sparinfo?
-        o_out.close();
-        f_out.close();
-      } catch (FileNotFoundException e) {
-      } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      }
+  private void save(Graph<City> g) {
+   int answer = fc.showSaveDialog(MainWindow.this);
+   if(answer==JFileChooser.APPROVE_OPTION){   
+     File f = fc.getSelectedFile();
+     String filename = f.getAbsolutePath();
+     
+        try {
+          FileOutputStream f_out = new FileOutputStream(file);
+          ObjectOutputStream o_out = new ObjectOutputStream(f_out);
+          o_out.writeObject(graph); //Hur ska vi samla sparinfo?
+          o_out.close();
+        } catch (FileNotFoundException e) {
+          System.err.println("Filen går ej att skriva!");
+        } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+        }
+     }
   }
 
   @Override
