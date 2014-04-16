@@ -57,6 +57,9 @@ public class MapPanel extends JPanel implements MouseListener {
         mapClickedListener.mapClicked(arg0.getX(), arg0.getY());
       setActive(false);
     }
+    else{
+      mapClickedListener.markerClicked(arg0.getX(), arg0.getY());  
+    }
   }
   @Override
   public void mouseEntered(MouseEvent arg0) {

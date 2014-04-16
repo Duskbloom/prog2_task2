@@ -19,7 +19,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
   private Graph<City> graph;
   private File file;
   private ImageIcon bild = new ImageIcon();
-  private MapPanel map;
+  MapPanel map;
   private Marker<City> m1, m2;
 
   public MainWindow(){
@@ -210,7 +210,7 @@ private void showNewConnectionForm(NewConnectionForm form){
         } catch (FileNotFoundException e) {
           System.err.println("Filen går ej att skriva!");
         } catch (IOException e) {
-        // TODO Auto-generated catch block
+          System.err.println("IOException!");
         e.printStackTrace();
         }
      }
@@ -223,6 +223,13 @@ private void showNewConnectionForm(NewConnectionForm form){
     Marker<City> m = new Marker<City>(x, y, stad);
     graph.add(stad);
     map.add(m);
+  }
+
+  @Override
+  public void markerClicked(int x, int y) {
+    Component c = map.getComponentAt(x, y);
+    if(c instanceof Marker) //INGET FUNKAR D:
+      ((Marker<?>) c).setActive(true);    
   }
    
  
