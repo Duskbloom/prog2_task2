@@ -1,5 +1,6 @@
 
 import graphs.*;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.*;
@@ -19,7 +20,8 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
   private File file;
   private ImageIcon bild = new ImageIcon();
   private MapPanel map;
-  
+  //private Marker<City> m1, m2;
+
   public MainWindow(){
     super("PathFinder");
     setJMenuBar(buildMenuPanel());
@@ -113,6 +115,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
       add(map);
       validate();
       pack();
+      setLocationRelativeTo(null);
     }
     if (e.getSource() == openMenuItem){
       fc.setFileFilter(mapFilter);
@@ -127,7 +130,6 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
       add(map);
       validate();
       pack();
-
       setLocationRelativeTo(null);
     }
     if (e.getSource() == saveMenuItem){
@@ -151,9 +153,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     if (e.getSource() == showConnectionMI || e.getSource() == showConnectionB){
     }
     if (e.getSource() == newPlaceMI || e.getSource() == newPlaceB){
-      //klicka var den ska hamna, rita en cirkel fär
       map.setActive(true);
-      
     }
     if (e.getSource() == newConnectionMI || e.getSource() == newConnectionB){
     }
@@ -205,7 +205,13 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     graph.add(stad);
     map.add(m);
   }
-  
-  
-  
+   
+ 
+//    if(m1==null){
+//      m1 = m;
+//      m.setActive(true);
+//    }else if(m2==null){
+//      m2 = m;
+//      m.setActive(true);
+
 }

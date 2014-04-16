@@ -28,6 +28,7 @@ public class MapPanel extends JPanel implements MouseListener {
     setMaximumSize(d);
     setMinimumSize(d);
     setLayout(new FlowLayout(FlowLayout.LEFT));
+
   }
   
   public MapClickedListener getMapClickedListener() {
