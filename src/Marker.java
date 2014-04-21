@@ -1,18 +1,13 @@
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 public class Marker<T> extends JPanel{
   private T item;
   private int y;
   private int x;
-  private JLabel name;
   private boolean active = false;
     
   Marker(int x, int y, T item){

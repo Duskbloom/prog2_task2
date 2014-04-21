@@ -17,10 +17,6 @@ public class MapPanel extends JPanel implements MouseListener {
   
   public MapPanel(ImageIcon bild){
     this.bild = bild;
-    MapPanel();
-    this.addMouseListener(this);
-  }
-  private void MapPanel(){
     int w = bild.getIconWidth();
     int h = bild.getIconHeight();
     Dimension d = new Dimension(w, h);
@@ -28,9 +24,9 @@ public class MapPanel extends JPanel implements MouseListener {
     setMaximumSize(d);
     setMinimumSize(d);
     setLayout(new FlowLayout(FlowLayout.LEFT));
-
+    this.addMouseListener(this);
   }
-  
+
   public MapClickedListener getMapClickedListener() {
     return mapClickedListener;
   }
