@@ -1,10 +1,12 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 
-public class Marker<T> extends JPanel{
+public class Marker<T> extends JPanel implements MouseListener{
   private T item;
   private int y;
   private int x;
@@ -55,5 +57,25 @@ public class Marker<T> extends JPanel{
     }
     g.setColor(Color.BLACK);
     g.drawString(item.toString(), 10, 45);
+  }
+
+  @Override
+  public void mouseExited(MouseEvent event){
+  }
+
+  @Override
+  public void mouseClicked(MouseEvent event){
+  }
+
+  @Override
+  public void mousePressed(MouseEvent event){
+  }
+
+  @Override
+  public void mouseEntered(MouseEvent event){
+  }
+
+  @Override
+  public void mouseReleased(MouseEvent event){
   }
 }

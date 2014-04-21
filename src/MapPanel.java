@@ -9,7 +9,7 @@ import java.awt.event.MouseListener;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-public class MapPanel extends JPanel implements MouseListener {
+public class MapPanel extends JPanel implements MouseListener, MarkerListener<City> {
   private ImageIcon bild;
   private boolean active = false;
   private MapClickedListener mapClickedListener;
@@ -85,6 +85,10 @@ public class MapPanel extends JPanel implements MouseListener {
     repaint();
     return ret;
     
+  }
+
+  @Override
+  public void markerClicked(Marker<City> marker){
   }
   
 }
