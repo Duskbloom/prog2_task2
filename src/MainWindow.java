@@ -10,7 +10,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class MainWindow extends JFrame implements ActionListener, MapClickedListener{
-  
+
   private JMenuItem newMenuItem, openMenuItem, saveMenuItem, saveAsMenuItem, exitMenuItem, findPathMI, showConnectionMI, newPlaceMI, newConnectionMI, changeConnectionMI;
   private JButton findPathB, showConnectionB, newPlaceB, newConnectionB, changeConnectionB;
   private final JFileChooser fc = new JFileChooser();
@@ -34,19 +34,19 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
 
   private JPanel buildButtonPanel() {
     JPanel panel = new JPanel();
-    
+
     findPathB = new JButton("Hitta väg");
     showConnectionB = new JButton("Visa förbindelse");
     newPlaceB = new JButton("Ny plats");
     newConnectionB = new JButton("Ny förbindelse");
     changeConnectionB = new JButton("Ändra förbindelse");
-    
+
     panel.add(findPathB);
     panel.add(showConnectionB);
     panel.add(newPlaceB);
     panel.add(newConnectionB);
     panel.add(changeConnectionB);
-    
+
     findPathB.addActionListener(this);
     showConnectionB.addActionListener(this);
     newPlaceB.addActionListener(this);
@@ -61,7 +61,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     JMenu opMenu = new JMenu("Operationer");
     menubar.add(arkivMenu); 
     menubar.add(opMenu);
-    
+
     newMenuItem = new JMenuItem("Ny");
     openMenuItem = new JMenuItem("Öppna");
     saveMenuItem = new JMenuItem("Spara");
@@ -72,7 +72,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     arkivMenu.add(saveMenuItem);
     arkivMenu.add(saveAsMenuItem);
     arkivMenu.add(exitMenuItem);
-    
+
     findPathMI = new JMenuItem("Hitta väg");
     showConnectionMI = new JMenuItem("Visa förbindelse");
     newPlaceMI = new JMenuItem("Ny plats");
@@ -83,7 +83,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     opMenu.add(newPlaceMI);
     opMenu.add(newConnectionMI);
     opMenu.add(changeConnectionMI);
-    
+
     newMenuItem.addActionListener(this);
     openMenuItem.addActionListener(this);
     saveMenuItem.addActionListener(this);
@@ -94,7 +94,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     newPlaceMI.addActionListener(this);
     newConnectionMI.addActionListener(this);
     changeConnectionMI.addActionListener(this);
-        
+
     return menubar;
   }
 
@@ -137,21 +137,24 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
       int returnVal = fc.showSaveDialog(this);
     }
     if (e.getSource() == exitMenuItem){
-     /* if(){
+      /* if(){
         int answer = JOptionPane.showConfirmDialog(this, "Du har osparade ändringar. Vill du spara?", "Varning", JOptionPane.YES_NO_CANCEL_OPTION);
         if(answer == JOptionPane.YES_OPTION)
           save(file);
       }*/
       System.exit(0);
     }
-    
+
     if (e.getSource() == findPathMI || e.getSource() == findPathB){
     }
     if (e.getSource() == showConnectionMI || e.getSource() == showConnectionB){
       ArrayList<Marker<City>> markers = map.getSelectedMarkers();
       if(markers.size() == 2){
         Edge<City> connection = map.getGraph().getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
-        JOptionPane.showMessageDialog(null, "Från " + markers.get(0).getItem() + " " + connection);
+        if(connection != null)
+          JOptionPane.showMessageDialog(null, "Från " + markers.get(0).getItem() + " " + connection);
+        else
+          JOptionPane.showMessageDialog(null, "Det finns ingen förbindelse mellan platserna.");
       }
       else
         JOptionPane.showMessageDialog(null, "Du måste välja två platser");
@@ -161,26 +164,64 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     }
     if (e.getSource() == newConnectionMI || e.getSource() == newConnectionB){
       NewConnectionForm form = new NewConnectionForm();
-      showNewConnectionForm(form);
+      ArrayList<Marker<City>> markers = map.getSelectedMarkers();
+      if(markers.size() == 2){
+        Edge<City> connection = map.getGraph().getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
+        if(connection == null){
+          showNewConnectionForm(form);
+        }
+        else
+          JOptionPane.showMessageDialog(null, "Det finns redan en förbindelse mellan platserna.");
       }
-      //
-    if (e.getSource() == changeConnectionMI || e.getSource() == changeConnectionB){
+      else
+        JOptionPane.showMessageDialog(null, "Du måste välja två platser");
       
+    }
+    //
+    if (e.getSource() == changeConnectionMI || e.getSource() == changeConnectionB){
+      NewConnectionForm form = new NewConnectionForm();
+      ArrayList<Marker<City>> markers = map.getSelectedMarkers();
+      if(markers.size() == 2){
+        Edge<City> connection = map.getGraph().getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
+        if(connection != null){
+          form.setNameField(connection.getNamn());
+          form.setTimeField(connection.getWeight());
+          showChangeConnectionForm(form);
+        }
+        else
+          JOptionPane.showMessageDialog(null, "Det finns ingen förbindelse mellan platserna.");
+      }
+      else
+        JOptionPane.showMessageDialog(null, "Du måste välja två platser");
+    }
+  }
+
+  private void showNewConnectionForm(NewConnectionForm form){
+    ArrayList<Marker<City>> markers = map.getSelectedMarkers();
+    int result = JOptionPane.showConfirmDialog(null, form, "Ny förbindelse", JOptionPane.OK_CANCEL_OPTION, JOptionPane.NO_OPTION);
+    if(result == JOptionPane.OK_OPTION){
+      if(form.isValidForm()){
+        map.getGraph().connect(markers.get(0).getItem(), markers.get(1).getItem(), form.getName(), form.getTime());
+        map.revalidate();
+        map.repaint();
+      } else 
+        showNewConnectionForm(form);
     }
   }
   
-private void showNewConnectionForm(NewConnectionForm form){
-  ArrayList<Marker<City>> markers = map.getSelectedMarkers();
-  int result = JOptionPane.showConfirmDialog(null, form, "Ny förbindelse", JOptionPane.OK_CANCEL_OPTION, JOptionPane.NO_OPTION);
-  if(result == JOptionPane.OK_OPTION){
-    if(form.isValidForm()){
-      map.getGraph().connect(markers.get(0).getItem(), markers.get(1).getItem(), form.getName(), form.getTime());
-      map.revalidate();
-      map.repaint();
-    } else 
-      showNewConnectionForm(form);
+  private void showChangeConnectionForm(NewConnectionForm form){
+    ArrayList<Marker<City>> markers = map.getSelectedMarkers();
+    int result = JOptionPane.showConfirmDialog(null, form, "Ändra förbindelse", JOptionPane.OK_CANCEL_OPTION, JOptionPane.NO_OPTION);
+    if(result == JOptionPane.OK_OPTION){
+      if(form.isValidForm()){
+        map.getGraph().setConnectionName(markers.get(0).getItem(), markers.get(1).getItem(), form.getName());
+        map.getGraph().setConnectionWeight(markers.get(0).getItem(), markers.get(1).getItem(), form.getTime());
+        map.revalidate();
+        map.repaint();
+      } else 
+        showNewConnectionForm(form);
+    }
   }
-}
 
   @SuppressWarnings("unchecked")
   private static <T> T load(File file) {
@@ -191,36 +232,36 @@ private void showNewConnectionForm(NewConnectionForm form){
       o_in.close();
       f_in.close();
       return (T) read;
-      } catch (FileNotFoundException e) {
-          System.out.println(file + " not found");
-      } catch (IOException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-      } catch (ClassNotFoundException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-      }    
+    } catch (FileNotFoundException e) {
+      System.out.println(file + " not found");
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (ClassNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }    
     return null;
   }
 
   private void save(Graph<City> g) {
-   int answer = fc.showSaveDialog(MainWindow.this);
-   if(answer==JFileChooser.APPROVE_OPTION){   
-     File f = fc.getSelectedFile();
-     String filename = f.getAbsolutePath();
-     
-        try {
-          FileOutputStream f_out = new FileOutputStream(file);
-          ObjectOutputStream o_out = new ObjectOutputStream(f_out);
-          o_out.writeObject(map.getGraph()); //Hur ska vi samla sparinfo?
-          o_out.close();
-        } catch (FileNotFoundException e) {
-          System.err.println("Filen går ej att skriva!");
-        } catch (IOException e) {
-          System.err.println("IOException!");
+    int answer = fc.showSaveDialog(MainWindow.this);
+    if(answer==JFileChooser.APPROVE_OPTION){   
+      File f = fc.getSelectedFile();
+      String filename = f.getAbsolutePath();
+
+      try {
+        FileOutputStream f_out = new FileOutputStream(file);
+        ObjectOutputStream o_out = new ObjectOutputStream(f_out);
+        o_out.writeObject(map.getGraph()); //Hur ska vi samla sparinfo?
+        o_out.close();
+      } catch (FileNotFoundException e) {
+        System.err.println("Filen går ej att skriva!");
+      } catch (IOException e) {
+        System.err.println("IOException!");
         e.printStackTrace();
-        }
-     }
+      }
+    }
   }
 
   @Override
@@ -239,13 +280,13 @@ private void showNewConnectionForm(NewConnectionForm form){
     if(c instanceof Marker) //INGET FUNKAR D:
       ((Marker<?>) c).setActive(true);    
   }
-   
- 
-//    if(m1==null){
-//      m1 = m;
-//      m.setActive(true);
-//    }else if(m2==null){
-//      m2 = m;
-//      m.setActive(true);
+
+
+  //    if(m1==null){
+  //      m1 = m;
+  //      m.setActive(true);
+  //    }else if(m2==null){
+  //      m2 = m;
+  //      m.setActive(true);
 
 }

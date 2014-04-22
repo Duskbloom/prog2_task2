@@ -19,6 +19,14 @@ public class NewConnectionForm extends Form {
    this.add(p2);   
   }
   
+  public void setNameField(String str) {
+    nameField.setText(str);
+  }
+
+  public void setTimeField(int i) {
+    timeField.setText(""+i);
+  }
+
   public String getName(){
     return nameField.getText();
   }

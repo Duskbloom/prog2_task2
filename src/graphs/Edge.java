@@ -1,12 +1,12 @@
 package graphs;
 public class Edge<T> {
   private T dest;
-  private String namn;
+  private String name;
   private int weight;
   
-  public Edge(T dest, String namn, int weight){
+  public Edge(T dest, String name, int weight){
     this.dest = dest;
-    this.namn = namn;
+    this.name = name;
     this.weight = weight;
   }
   
@@ -18,10 +18,17 @@ public class Edge<T> {
     return weight;
   }
   
-  public void setWeight(int value){
-    weight = value;
+  public String getNamn(){
+    return name;
+  }
+  public void setWeight(int weight){
+    this.weight = weight;
+  }
+  
+  public void setName(String name){
+    this.name = name;
   }
   public String toString(){
-    return "med " + namn + " till " + dest + " tar " + weight;
+    return "med " + name + " till " + dest + " tar " + weight;
   }
 }
