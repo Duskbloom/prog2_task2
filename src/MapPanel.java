@@ -24,6 +24,7 @@ public class MapPanel extends JPanel implements MouseListener, MarkerListener<Ci
   private Graph<City> graph;
 
   public MapPanel(ImageIcon bild){
+    graph = new ListGraph<City>();
     this.bild = bild;
     int w = bild.getIconWidth();
     int h = bild.getIconHeight();
