@@ -1,7 +1,8 @@
 package graphs;
+import java.io.Serializable;
 import java.util.*;
 
-public interface Graph<T>{
+public interface Graph<T> extends Serializable{
   public void add(T item);
   public void connect(T from, T to, String name, int weight);
   public List<T> getNodes();
@@ -9,4 +10,5 @@ public interface Graph<T>{
   public List<Edge<T>> getAnyPath(T from, T to);
   public Edge<T> getEdgeBetween(T from, T to);
   public void setConnectionWeight(T from, T to, int weight);
+  public void setConnectionName(T from, T to, String name);
 }

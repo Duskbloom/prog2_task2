@@ -7,6 +7,10 @@ import java.awt.event.MouseListener;
 import javax.swing.JPanel;
 
 public class Marker<T> extends JPanel implements MouseListener{
+  /**
+   * 
+   */
+  private static final long serialVersionUID = -2787103106463702589L;
   private T item;
   private int y;
   private int x;

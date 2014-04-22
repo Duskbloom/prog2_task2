@@ -2,6 +2,10 @@ package graphs;
 import java.util.*;
 
 public class ListGraph<T> implements Graph<T> {
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 7206624012985749434L;
   private Map<T, List<Edge<T>>> data = new HashMap<T, List<Edge<T>>>();
 
   public void add(T item){
@@ -94,7 +98,7 @@ public class ListGraph<T> implements Graph<T> {
     if(weight < 0){
       throw new IllegalArgumentException("vikt får inte vara mindre än 0");
     }
-
+   
     Edge<T> edge1 = getEdgeBetween(from, to);
     Edge<T> edge2 = getEdgeBetween(to, from);
     if(edge1 != null && edge2 != null){
@@ -105,6 +109,27 @@ public class ListGraph<T> implements Graph<T> {
     }
   }
 
+  @Override
+  public void setConnectionName(T from, T to, String name) {
+    if(!data.keySet().contains(from) && !data.keySet().contains(to)){
+      throw new NoSuchElementException("En eller båda av noderna existerar inte i grafen");
+    }
+
+    if(name == null){
+      throw new IllegalArgumentException("Du måste ha ett namn");
+    }
+   
+    Edge<T> edge1 = getEdgeBetween(from, to);
+    Edge<T> edge2 = getEdgeBetween(to, from);
+    if(edge1 != null && edge2 != null){
+      edge1.setName(name);
+      edge2.setName(name);
+    }else{
+      throw new NoSuchElementException("Det existerar ingen anslutning mellan städerna");
+    }
+    
+  }
+  
   public int count(){
     return data.size();
   }
@@ -119,4 +144,5 @@ public class ListGraph<T> implements Graph<T> {
     }
     return str;
   }
+
 }
