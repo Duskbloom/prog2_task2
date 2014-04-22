@@ -56,6 +56,10 @@ public class Marker<T> extends JPanel implements MouseListener{
     this.markerListener = listener;
   }
 
+  public MarkerData<T> getData(){
+    return new MarkerData<T>(this);
+  }
+
   protected void paintComponent(Graphics g){
     if(!active){
       g.setColor(Color.CYAN);

@@ -21,13 +21,13 @@ public class Storage{
     return null;
   }
 
-  public static void save(MapPanel map, File f) {
+  public static void save(StorageObject object, File f) {
     String filename = f.getAbsolutePath();
 
     try {
       FileOutputStream f_out = new FileOutputStream(f);
       ObjectOutputStream o_out = new ObjectOutputStream(f_out);
-      o_out.writeObject(map); //Hur ska vi samla sparinfo?
+      o_out.writeObject(object); //Hur ska vi samla sparinfo?
       o_out.close();
     } catch (FileNotFoundException e) {
       System.err.println("Filen går ej att skriva!");
