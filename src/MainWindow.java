@@ -15,8 +15,8 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
    * 
    */
   private static final long serialVersionUID = -8555779389804914547L;
-  private JMenuItem newMenuItem, openMenuItem, saveMenuItem, saveAsMenuItem, exitMenuItem, findPathMI, showConnectionMI, newPlaceMI, newConnectionMI, changeConnectionMI;
-  private JButton findPathB, showConnectionB, newPlaceB, newConnectionB, changeConnectionB;
+  private JMenuItem newMenuItem, openMenuItem, saveMenuItem, saveAsMenuItem, exitMenuItem, findPathMI, showConnectionMI, newPlaceMI, newConnectionMI, changeConnectionMI, removeConnectionMI, removePlaceMI;
+  private JButton findPathB, showConnectionB, removePlaceB, newPlaceB, newConnectionB, changeConnectionB, removeConnectionB;
   private final JFileChooser fc = new JFileChooser();
   private FileNameExtensionFilter imageFilter = new FileNameExtensionFilter("Bilder", "jpg", "png", "gif");
   private FileNameExtensionFilter mapFilter = new FileNameExtensionFilter("Kartor", "map");
@@ -38,24 +38,30 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
 
   private JPanel buildButtonPanel() {
     JPanel panel = new JPanel();
-
+    
     findPathB = new JButton("Hitta väg");
-    showConnectionB = new JButton("Visa förbindelse");
-    newPlaceB = new JButton("Ny plats");
     newConnectionB = new JButton("Ny förbindelse");
+    showConnectionB = new JButton("Visa förbindelse");
     changeConnectionB = new JButton("Ändra förbindelse");
+    removeConnectionB = new JButton("Ta bort förbindelse");
+    newPlaceB = new JButton("Ny plats");
+    removePlaceB = new JButton("Ta bort plats");
 
     panel.add(findPathB);
-    panel.add(showConnectionB);
-    panel.add(newPlaceB);
     panel.add(newConnectionB);
+    panel.add(showConnectionB);
     panel.add(changeConnectionB);
+    panel.add(removeConnectionB);
+    panel.add(newPlaceB);
+    panel.add(removePlaceB);
 
     findPathB.addActionListener(this);
     showConnectionB.addActionListener(this);
     newPlaceB.addActionListener(this);
     newConnectionB.addActionListener(this);
     changeConnectionB.addActionListener(this);
+    removeConnectionB.addActionListener(this);
+    removePlaceB.addActionListener(this);
     return panel;
   }
 
@@ -82,11 +88,16 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     newPlaceMI = new JMenuItem("Ny plats");
     newConnectionMI = new JMenuItem("Ny förbindelse");
     changeConnectionMI = new JMenuItem("Ändra förbindelse");
+    removeConnectionMI = new JMenuItem("Ta bort förbindelse");
+    removePlaceMI = new JMenuItem("Ta bort plats");
+
     opMenu.add(findPathMI);
-    opMenu.add(showConnectionMI);
-    opMenu.add(newPlaceMI);
     opMenu.add(newConnectionMI);
+    opMenu.add(showConnectionMI);
     opMenu.add(changeConnectionMI);
+    opMenu.add(removeConnectionMI);
+    opMenu.add(newPlaceMI);
+    opMenu.add(removePlaceMI);
 
     newMenuItem.addActionListener(this);
     openMenuItem.addActionListener(this);
@@ -98,6 +109,8 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     newPlaceMI.addActionListener(this);
     newConnectionMI.addActionListener(this);
     changeConnectionMI.addActionListener(this);
+    removeConnectionMI.addActionListener(this);
+    removePlaceMI.addActionListener(this);
 
     return menubar;
   }
@@ -182,7 +195,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
       }
       else
         JOptionPane.showMessageDialog(null, "Du måste välja två platser");
-      
+
     }
     //
     if (e.getSource() == changeConnectionMI || e.getSource() == changeConnectionB){
@@ -201,6 +214,35 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
       else
         JOptionPane.showMessageDialog(null, "Du måste välja två platser");
     }
+    if (e.getSource() == removeConnectionB || e.getSource() == removeConnectionMI){
+      ArrayList<Marker<City>> markers = map.getSelectedMarkers();
+      if(markers.size() == 2){
+        Edge<City> connection = map.getGraph().getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
+        if(connection != null){
+          map.getGraph().disconnect(markers.get(0).getItem(), markers.get(1).getItem());
+          map.revalidate();
+          map.repaint();
+        }
+        else
+          JOptionPane.showMessageDialog(null, "Det finns ingen förbindelse mellan platserna.");
+      }
+      else
+        JOptionPane.showMessageDialog(null, "Du måste välja två platser");
+    }
+
+    if (e.getSource() == removePlaceB || e.getSource() == removePlaceMI){
+      ArrayList<Marker<City>> markers = map.getSelectedMarkers();
+      if(markers.size() == 1){
+        int result = JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort " + markers.get(0).getItem(), "Ta bort plats", JOptionPane.OK_CANCEL_OPTION);
+        if(result == JOptionPane.OK_OPTION){
+          map.getGraph().remove(markers.get(0).getItem());
+          map.removeMarker(markers.get(0));
+          map.revalidate();
+          map.repaint();
+        }
+      }
+
+    }
   }
 
   private void showNewConnectionForm(NewConnectionForm form){
@@ -215,7 +257,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
         showNewConnectionForm(form);
     }
   }
-  
+
   private void showChangeConnectionForm(NewConnectionForm form){
     ArrayList<Marker<City>> markers = map.getSelectedMarkers();
     int result = JOptionPane.showConfirmDialog(null, form, "Ändra förbindelse", JOptionPane.OK_CANCEL_OPTION, JOptionPane.NO_OPTION);
@@ -244,16 +286,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
   @Override
   public void markerClicked(int x, int y) {
     Component c = map.getComponentAt(x, y);
-    if(c instanceof Marker) //INGET FUNKAR D:
+    if(c instanceof Marker) 
       ((Marker<?>) c).setActive(true);    
   }
-
-
-  //    if(m1==null){
-  //      m1 = m;
-  //      m.setActive(true);
-  //    }else if(m2==null){
-  //      m2 = m;
-  //      m.setActive(true);
-
 }

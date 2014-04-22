@@ -215,4 +215,65 @@ public class ListGraphTests {
     Object s2 = new Object();
     graph.getEdgeBetween(s1,s2);
   }
+  
+  @Test
+  public void disconnectNodes(){
+    Object s1 = new Object();
+    Object s2 = new Object();
+
+    graph.add(s1);
+    graph.add(s2);
+    
+    graph.connect(s1, s2, "Test", 5);
+    graph.disconnect(s1, s2);
+    
+    assertEquals(null, graph.getEdgeBetween(s1, s2));
+  }
+  
+  @Test
+  public void disconnectNodesInReverseOrder(){
+    Object s1 = new Object();
+    Object s2 = new Object();
+
+    graph.add(s1);
+    graph.add(s2);
+    
+    graph.connect(s1, s2, "Test", 5);
+    graph.disconnect(s2, s1);
+    
+    assertEquals(null, graph.getEdgeBetween(s1, s2));
+  }
+  
+  @Test(expected=IllegalStateException.class)
+  public void connectionAlreadyExistsReverseOrder(){
+    Object s1 = new Object();
+    Object s2 = new Object();
+
+    graph.add(s1);
+    graph.add(s2);
+    
+    graph.connect(s1, s2, "Test", 5);
+    graph.connect(s2, s1, "Test", 5);
+  }
+  
+  @Test
+  public void removeNodeOnly(){
+    Object s1 = new Object();
+    graph.add(s1);
+    graph.remove(s1);
+    
+    assertEquals(graph.count(), 0);
+  }
+  
+  public void removeNodeAndEdges(){
+    Object s1 = new Object();
+    Object s2 = new Object();
+
+    graph.add(s1);
+    graph.add(s2);
+    graph.connect(s1, s2, "Test", 5);
+    graph.remove(s1);
+    
+    assertEquals(graph.getEdgesFrom(s2), null);
+  }
 }

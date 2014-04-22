@@ -33,6 +33,33 @@ public class ListGraph<T> implements Graph<T> {
     toRoads.add(e2);
   }
 
+
+  public void disconnect(T from, T to) {
+    Edge<T> e1 = getEdgeBetween(from, to);
+    Edge<T> e2 = getEdgeBetween(to, from);
+    List<Edge<T>> fromRoads = data.get(from);
+    List<Edge<T>> toRoads = data.get(to);
+    fromRoads.remove(e1);
+    toRoads.remove(e2); 
+  }
+
+  public void remove(T item) {
+    if(data.containsKey(item)){
+      //remove all connections
+      Collection<List<Edge<T>>> lists = data.values(); 
+      Iterator<List<Edge<T>>> it = lists.iterator();
+      while(it.hasNext()){
+        List<Edge<T>> list = (List<Edge<T>>) it.next();
+        for(Edge<T> e : list)
+          if(e.getDestination().equals(item))
+            it.remove();
+      }
+      //remove node
+      data.remove(item); 
+    }
+
+  }
+
   public List<T> getNodes(){
     return new ArrayList<T> (data.keySet()); 
   }
@@ -98,7 +125,7 @@ public class ListGraph<T> implements Graph<T> {
     if(weight < 0){
       throw new IllegalArgumentException("vikt får inte vara mindre än 0");
     }
-   
+
     Edge<T> edge1 = getEdgeBetween(from, to);
     Edge<T> edge2 = getEdgeBetween(to, from);
     if(edge1 != null && edge2 != null){
@@ -118,7 +145,7 @@ public class ListGraph<T> implements Graph<T> {
     if(name == null){
       throw new IllegalArgumentException("Du måste ha ett namn");
     }
-   
+
     Edge<T> edge1 = getEdgeBetween(from, to);
     Edge<T> edge2 = getEdgeBetween(to, from);
     if(edge1 != null && edge2 != null){
@@ -127,9 +154,9 @@ public class ListGraph<T> implements Graph<T> {
     }else{
       throw new NoSuchElementException("Det existerar ingen anslutning mellan städerna");
     }
-    
+
   }
-  
+
   public int count(){
     return data.size();
   }
