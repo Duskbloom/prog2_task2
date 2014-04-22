@@ -54,6 +54,25 @@ public class ListGraphTests {
     assertNotNull(graph.getEdgesFrom(s2));
   }
 
+  @Test
+  public void connectThreeNodes(){
+    Object s1 = new Object();
+    Object s2 = new Object();
+    Object s3 = new Object();
+
+    graph.add(s1);
+    graph.add(s2);
+    graph.add(s3);
+
+    graph.connect(s1, s2, "Båt", 5);
+    graph.connect(s2, s3, "Båt", 3);
+    graph.connect(s3, s1, "Båt", 2);
+
+    assertEquals(2, graph.getEdgesFrom(s1).size());
+    assertEquals(2, graph.getEdgesFrom(s2).size());
+    assertEquals(2, graph.getEdgesFrom(s3).size());
+  }
+
   @Test(expected=NoSuchElementException.class)
   public void connectsUnavailableNodes(){
     Object s1 = new Object();

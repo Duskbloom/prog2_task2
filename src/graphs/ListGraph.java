@@ -9,21 +9,23 @@ public class ListGraph<T> implements Graph<T> {
       data.put(item, new ArrayList<Edge<T>>() ); //eller throw exception
   }
 
-  public void connect(T from, T to, String namn, int vikt){
+  public void connect(T from, T to, String name, int weight){
     List<Edge<T>> fromRoads = data.get(from);
     List<Edge<T>> toRoads = data.get(to);
 
     if(fromRoads == null || toRoads == null)
-      throw new NoSuchElementException("Stad finns ej vid connect");
-    if(vikt<0)
-      throw new IllegalArgumentException("Vikten måste vara positiv");
-    if(pathExists(from, to))
-      throw new IllegalStateException("Det finns redan en förbindelse mellan noderna");
+      throw new NoSuchElementException("The given node does not exist in the graph");
+    if(weight<0)
+      throw new IllegalArgumentException("Weight can´t be less than 0");
+    for(Edge<T> edge: fromRoads){
+      if(edge.getDestination().equals(to))
+        throw new IllegalStateException("A path already exists between the given nodes");
+    }
 
-    Edge<T> e1 = new Edge<T>(to, namn, vikt);
+    Edge<T> e1 = new Edge<T>(to, name, weight);
     fromRoads.add(e1);
 
-    Edge<T> e2 = new Edge<T>(from, namn, vikt);
+    Edge<T> e2 = new Edge<T>(from, name, weight);
     toRoads.add(e2);
   }
 
