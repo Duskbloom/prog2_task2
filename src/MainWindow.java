@@ -141,6 +141,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
       if(map!=null)
         remove(map);
       map = new MapPanel(data.getBackground(), data.getGraph());
+      map.setMapClickedListener(this);
       for(Marker<City> m: data.getMarkers()){
         map.addMarker(m);
       }
