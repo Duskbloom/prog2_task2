@@ -18,6 +18,7 @@ public class Marker<T> extends JPanel implements MouseListener{
     this.y = y - 15;
     this.item = item;
     Dimension d = new Dimension(50,50);
+    setOpaque(false);
     setSize(d);
     setLocation(this.x, this.y);
     addMouseListener(this);
@@ -43,6 +44,7 @@ public class Marker<T> extends JPanel implements MouseListener{
 
   public void setActive(boolean active) {
     this.active = active;
+    this.revalidate();
     this.repaint();
   }
 
