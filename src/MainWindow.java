@@ -178,7 +178,7 @@ private void showNewConnectionForm(NewConnectionForm form){
   int result = JOptionPane.showConfirmDialog(null, form, "Ny förbindelse", JOptionPane.OK_CANCEL_OPTION, JOptionPane.NO_OPTION);
   if(result == JOptionPane.OK_OPTION){
     if(form.isValidForm()){
-      graph.connect(markers.get(0).getItem(), markers.get(1).getItem(), form.getName(), form.getTime());
+      map.getGraph().connect(markers.get(0).getItem(), markers.get(1).getItem(), form.getName(), form.getTime());
       map.revalidate();
       map.repaint();
     } else 

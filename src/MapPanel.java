@@ -1,4 +1,7 @@
+import graphs.Edge;
 import graphs.Graph;
+import graphs.ListGraph;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -7,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -16,6 +20,7 @@ public class MapPanel extends JPanel implements MouseListener, MarkerListener<Ci
   private boolean active = false;
   private MapClickedListener mapClickedListener;
   private ArrayList<Marker<City>> selectedMarkers = new ArrayList<Marker<City>>(2);
+  private ArrayList<Marker<City>> markers = new ArrayList<Marker<City>>();
   private Graph<City> graph;
 
   public MapPanel(ImageIcon bild){
@@ -27,6 +32,7 @@ public class MapPanel extends JPanel implements MouseListener, MarkerListener<Ci
     setMaximumSize(d);
     setMinimumSize(d);
     setLayout(null);
+    graph = new ListGraph<City>();
     this.addMouseListener(this);
     this.revalidate();
   }
@@ -37,11 +43,11 @@ public class MapPanel extends JPanel implements MouseListener, MarkerListener<Ci
   public void setMapClickedListener(MapClickedListener mapClickedListener) {
     this.mapClickedListener = mapClickedListener;
   }
-  
+
   public Graph<City> getGraph(){
     return graph;
   }
- 
+
   public ArrayList<Marker<City>> getSelectedMarkers() {
     return selectedMarkers;
   }
@@ -54,19 +60,25 @@ public class MapPanel extends JPanel implements MouseListener, MarkerListener<Ci
 
   private void paintConnections(Graphics g){
     g.setColor(Color.CYAN);
-    /*for(Marker<City> marker: markers){
-      System.out.println(marker);
-      Marker<City> other = getMarkerForCity(marker.getItem());
-      g.drawLine(marker.getX(), marker.getY(), other.getX(), other.getY());
-    }*/
+    for(Marker<City> marker: markers){
+      List<Edge<City>> connections = graph.getEdgesFrom(marker.getItem());
+      for(Edge<City> edge: connections){
+        Marker<City> other = getMarkerForCity(edge.getDestination());
+        int x1 = marker.getX() + 25;
+        int y1 = marker.getY() + 15;
+        int x2 = other.getX() + 25;
+        int y2 = other.getY() + 15;
+        g.drawLine(x1, y1, x2, y2);
+      }
+    }
   }
 
   private Marker<City> getMarkerForCity(City c){
-    /*for(Marker<City> marker: markers){
+    for(Marker<City> marker: markers){
       if(marker.getItem().equals(c)){
         return marker;
       }
-    }*/
+    }
     return null;
   }
 
@@ -105,6 +117,7 @@ public class MapPanel extends JPanel implements MouseListener, MarkerListener<Ci
 
   public void addMarker(Marker<City> marker){
     graph.add(marker.getItem());
+    markers.add(marker);
     add(marker);
   }
 
