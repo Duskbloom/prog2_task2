@@ -120,7 +120,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
       if(answer != JFileChooser.APPROVE_OPTION)
         return;
       file = fc.getSelectedFile();//test
-      load(file);
+      map = Storage.<MapPanel>load(file);
       if(map!=null)
         remove(map);
       map = new MapPanel(bild);
@@ -131,7 +131,10 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     }
     if (e.getSource() == saveMenuItem){
       fc.setFileFilter(mapFilter);
-      save(map.getGraph());
+      int answer = fc.showSaveDialog(MainWindow.this);
+      if(answer != JFileChooser.APPROVE_OPTION)
+        return;
+      Storage.save(map, fc.getSelectedFile());
     }
     if (e.getSource() == saveAsMenuItem){
       int returnVal = fc.showSaveDialog(this);
@@ -182,46 +185,6 @@ private void showNewConnectionForm(NewConnectionForm form){
   }
 }
 
-  @SuppressWarnings("unchecked")
-  private static <T> T load(File file) {
-    try {
-      FileInputStream f_in = new FileInputStream(file);
-      ObjectInputStream o_in = new ObjectInputStream(f_in);
-      Object read = o_in.readObject();
-      o_in.close();
-      f_in.close();
-      return (T) read;
-      } catch (FileNotFoundException e) {
-          System.out.println(file + " not found");
-      } catch (IOException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-      } catch (ClassNotFoundException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-      }    
-    return null;
-  }
-
-  private void save(Graph<City> g) {
-   int answer = fc.showSaveDialog(MainWindow.this);
-   if(answer==JFileChooser.APPROVE_OPTION){   
-     File f = fc.getSelectedFile();
-     String filename = f.getAbsolutePath();
-     
-        try {
-          FileOutputStream f_out = new FileOutputStream(file);
-          ObjectOutputStream o_out = new ObjectOutputStream(f_out);
-          o_out.writeObject(map.getGraph()); //Hur ska vi samla sparinfo?
-          o_out.close();
-        } catch (FileNotFoundException e) {
-          System.err.println("Filen går ej att skriva!");
-        } catch (IOException e) {
-          System.err.println("IOException!");
-        e.printStackTrace();
-        }
-     }
-  }
 
   @Override
   public void mapClicked(int x, int y) {
