@@ -6,8 +6,6 @@ import java.awt.Component;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashSet;
-
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -18,7 +16,6 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
   private final JFileChooser fc = new JFileChooser();
   private FileNameExtensionFilter imageFilter = new FileNameExtensionFilter("Bilder", "jpg", "png", "gif");
   private FileNameExtensionFilter mapFilter = new FileNameExtensionFilter("Kartor", "map");
-  private Graph<City> graph;
   private File file;
   private ImageIcon bild = new ImageIcon();
   MapPanel map;
@@ -103,7 +100,6 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
 
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == newMenuItem){
-      graph = new ListGraph<City>();
       fc.setFileFilter(imageFilter);
       int answer = fc.showOpenDialog(MainWindow.this);
       if(answer != JFileChooser.APPROVE_OPTION)
@@ -135,7 +131,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     }
     if (e.getSource() == saveMenuItem){
       fc.setFileFilter(mapFilter);
-      save(graph);
+      save(map.getGraph());
     }
     if (e.getSource() == saveAsMenuItem){
       int returnVal = fc.showSaveDialog(this);
@@ -154,7 +150,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     if (e.getSource() == showConnectionMI || e.getSource() == showConnectionB){
       ArrayList<Marker<City>> markers = map.getSelectedMarkers();
       if(markers.size() == 2){
-        Edge<City> connection = graph.getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
+        Edge<City> connection = map.getGraph().getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
         JOptionPane.showMessageDialog(null, "Från " + markers.get(0).getItem() + " " + connection);
       }
       else
@@ -178,7 +174,7 @@ private void showNewConnectionForm(NewConnectionForm form){
   int result = JOptionPane.showConfirmDialog(null, form, "Ny förbindelse", JOptionPane.OK_CANCEL_OPTION, JOptionPane.NO_OPTION);
   if(result == JOptionPane.OK_OPTION){
     if(form.isValidForm()){
-      graph.connect(markers.get(0).getItem(), markers.get(1).getItem(), form.getName(), form.getTime());
+      map.getGraph().connect(markers.get(0).getItem(), markers.get(1).getItem(), form.getName(), form.getTime());
       map.revalidate();
       map.repaint();
     } else 
@@ -216,7 +212,7 @@ private void showNewConnectionForm(NewConnectionForm form){
         try {
           FileOutputStream f_out = new FileOutputStream(file);
           ObjectOutputStream o_out = new ObjectOutputStream(f_out);
-          o_out.writeObject(graph); //Hur ska vi samla sparinfo?
+          o_out.writeObject(map.getGraph()); //Hur ska vi samla sparinfo?
           o_out.close();
         } catch (FileNotFoundException e) {
           System.err.println("Filen går ej att skriva!");
@@ -233,7 +229,7 @@ private void showNewConnectionForm(NewConnectionForm form){
     City stad = new City(namn);
     Marker<City> m = new Marker<City>(x, y, stad);
     m.setMarkerListener(map);
-    graph.add(stad);
+    map.getGraph().add(stad);
     map.addMarker(m);
   }
 
