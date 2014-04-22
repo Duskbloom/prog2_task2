@@ -175,9 +175,11 @@ private void showNewConnectionForm(NewConnectionForm form){
   ArrayList<Marker<City>> markers = map.getSelectedMarkers();
   int result = JOptionPane.showConfirmDialog(null, form, "Ny förbindelse", JOptionPane.OK_CANCEL_OPTION, JOptionPane.NO_OPTION);
   if(result == JOptionPane.OK_OPTION){
-    if(form.isValidForm())    
+    if(form.isValidForm()){
       graph.connect(markers.get(0).getItem(), markers.get(1).getItem(), form.getName(), form.getTime());
-    else
+      map.revalidate();
+      map.repaint();
+    } else 
       showNewConnectionForm(form);
   }
 }
@@ -230,7 +232,7 @@ private void showNewConnectionForm(NewConnectionForm form){
     Marker<City> m = new Marker<City>(x, y, stad);
     m.setMarkerListener(map);
     graph.add(stad);
-    map.add(m);
+    map.addMarker(m);
   }
 
   @Override
