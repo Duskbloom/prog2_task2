@@ -141,10 +141,10 @@ public class MapPanel extends JPanel implements MouseListener, MarkerListener<Ci
   }
   
   public void removeMarker(Marker<City> marker){
-    graph.remove(marker.getItem());
     markers.remove(marker);
     selectedMarkers.remove(marker);
     remove(marker);
+    graph.remove(marker.getItem());
   }
 
 

@@ -45,15 +45,19 @@ public class ListGraph<T> implements Graph<T> {
 
   public void remove(T item) {
     if(data.containsKey(item)){
+      List<Edge<T>> edges = new ArrayList<Edge<T>>(data.get(item));
+      for(Edge<T> edge: edges){
+        disconnect(item, edge.getDestination());
+      }
       //remove all connections
-      Collection<List<Edge<T>>> lists = data.values(); 
+      /*Collection<List<Edge<T>>> lists = data.values(); 
       Iterator<List<Edge<T>>> it = lists.iterator();
       while(it.hasNext()){
         List<Edge<T>> list = (List<Edge<T>>) it.next();
         for(Edge<T> e : list)
           if(e.getDestination().equals(item))
             it.remove();
-      }
+      }*/
       //remove node
       data.remove(item); 
     }
@@ -65,8 +69,7 @@ public class ListGraph<T> implements Graph<T> {
   }
 
   public List<Edge<T>> getEdgesFrom(T item){
-    List<Edge<T>> edges = data.get(item);
-    if(edges == null)
+    if(!data.containsKey(item))
       throw new NoSuchElementException("Element was not found in graph");
     return new ArrayList<Edge<T>>(data.get(item));
   }

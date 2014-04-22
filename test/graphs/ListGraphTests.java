@@ -265,6 +265,7 @@ public class ListGraphTests {
     assertEquals(graph.count(), 0);
   }
   
+  @Test
   public void removeNodeAndEdges(){
     Object s1 = new Object();
     Object s2 = new Object();
@@ -274,6 +275,12 @@ public class ListGraphTests {
     graph.connect(s1, s2, "Test", 5);
     graph.remove(s1);
     
-    assertEquals(graph.getEdgesFrom(s2), null);
+    assertEquals(0, graph.getEdgesFrom(s2).size());
+  }
+  
+  @Test(expected=NoSuchElementException.class)
+  public void getEdgesFromNonexistantNode(){
+    Object s1 = new Object();
+    graph.getEdgesFrom(s1);
   }
 }
