@@ -23,8 +23,9 @@ public class MapPanel extends JPanel implements MouseListener, MarkerListener<Ci
     setPreferredSize(d);
     setMaximumSize(d);
     setMinimumSize(d);
-    setLayout(new FlowLayout(FlowLayout.LEFT));
+    setLayout(null);
     this.addMouseListener(this);
+    this.revalidate();
   }
 
   public MapClickedListener getMapClickedListener() {
@@ -89,6 +90,8 @@ public class MapPanel extends JPanel implements MouseListener, MarkerListener<Ci
 
   @Override
   public void markerClicked(Marker<City> marker){
+    System.out.println("HELLO");
+    marker.setActive(!marker.isActive());
   }
   
 }

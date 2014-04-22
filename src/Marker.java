@@ -10,15 +10,17 @@ public class Marker<T> extends JPanel implements MouseListener{
   private T item;
   private int y;
   private int x;
+  private MarkerListener<T> markerListener;
   private boolean active = false;
     
   Marker(int x, int y, T item){
-    this.x = x-25;
-    this.y = y-15;
+    this.x = x - 25;
+    this.y = y - 15;
     this.item = item;
     Dimension d = new Dimension(50,50);
-    setPreferredSize(d);
-    setLocation(x, y);
+    setSize(d);
+    setLocation(this.x, this.y);
+    addMouseListener(this);
   }
   public int getY() {
     return y;
@@ -38,10 +40,16 @@ public class Marker<T> extends JPanel implements MouseListener{
   public boolean isActive() {
     return active;
   }
+
   public void setActive(boolean active) {
     this.active = active;
+    this.repaint();
   }
-  
+
+  public void setMarkerListener(MarkerListener<T> listener){
+    this.markerListener = listener;
+  }
+
   //public boolean contains(int x, int y){
   //  return x>10&&x<40&&y>10&&x<40; //ändra storlek på clickable area
   //  //setBounds för att sättta bounds som den ska ritas inom
@@ -65,6 +73,10 @@ public class Marker<T> extends JPanel implements MouseListener{
 
   @Override
   public void mouseClicked(MouseEvent event){
+    System.out.println("Inside the marker");
+    if(markerListener != null){
+      markerListener.markerClicked(this);
+    }
   }
 
   @Override

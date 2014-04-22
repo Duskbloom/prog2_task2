@@ -221,6 +221,7 @@ private void showNewConnectionForm(NewConnectionForm form){
     String namn = JOptionPane.showInputDialog("Namn: ");
     City stad = new City(namn);
     Marker<City> m = new Marker<City>(x, y, stad);
+    m.setMarkerListener(map);
     graph.add(stad);
     map.add(m);
   }
