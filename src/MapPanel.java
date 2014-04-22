@@ -41,6 +41,11 @@ public class MapPanel extends JPanel implements MouseListener, MarkerListener<Ci
     this.addMouseListener(this);
     this.revalidate();
   }
+  
+  public MapPanel(ImageIcon bild, Graph<City> graph){
+    this(bild);
+    this.graph = graph;
+  }
 
   public MapClickedListener getMapClickedListener() {
     return mapClickedListener;
@@ -55,6 +60,14 @@ public class MapPanel extends JPanel implements MouseListener, MarkerListener<Ci
 
   public ArrayList<Marker<City>> getSelectedMarkers() {
     return selectedMarkers;
+  }
+
+  public ArrayList<Marker<City>> getMarkers(){
+    return markers;
+  }
+
+  public ImageIcon getMap(){
+    return bild;
   }
 
   protected void paintComponent(Graphics g){
@@ -121,6 +134,7 @@ public class MapPanel extends JPanel implements MouseListener, MarkerListener<Ci
   }
 
   public void addMarker(Marker<City> marker){
+    marker.setMarkerListener(this);
     graph.add(marker.getItem());
     markers.add(marker);
     add(marker);

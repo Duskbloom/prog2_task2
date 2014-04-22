@@ -124,10 +124,13 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
       if(answer != JFileChooser.APPROVE_OPTION)
         return;
       file = fc.getSelectedFile();//test
-      map = Storage.<MapPanel>load(file);
+      StorageObject data  = Storage.<StorageObject>load(file);
       if(map!=null)
         remove(map);
-      map = new MapPanel(bild);
+      map = new MapPanel(data.getBackground(), data.getGraph());
+      for(Marker<City> m: data.getMarkers()){
+        map.addMarker(m);
+      }
       add(map);
       validate();
       pack();
@@ -138,7 +141,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
       int answer = fc.showSaveDialog(MainWindow.this);
       if(answer != JFileChooser.APPROVE_OPTION)
         return;
-      Storage.save(map, fc.getSelectedFile());
+      Storage.save(new StorageObject(map.getMap(), map.getGraph(), map.getMarkers()), fc.getSelectedFile());
     }
     if (e.getSource() == saveAsMenuItem){
       int returnVal = fc.showSaveDialog(this);
@@ -236,7 +239,6 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     String namn = JOptionPane.showInputDialog("Namn: ");
     City stad = new City(namn);
     Marker<City> m = new Marker<City>(x, y, stad);
-    m.setMarkerListener(map);
     map.getGraph().add(stad);
     map.addMarker(m);
   }

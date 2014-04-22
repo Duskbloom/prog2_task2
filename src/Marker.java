@@ -56,6 +56,10 @@ public class Marker<T> extends JPanel implements MouseListener{
     this.markerListener = listener;
   }
 
+  public MarkerData<T> getData(){
+    return new MarkerData<T>(this);
+  }
+
   //public boolean contains(int x, int y){
   //  return x>10&&x<40&&y>10&&x<40; //ändra storlek på clickable area
   //  //setBounds för att sättta bounds som den ska ritas inom
