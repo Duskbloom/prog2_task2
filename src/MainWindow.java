@@ -239,7 +239,6 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
       if(markers.size() == 1){
         int result = JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort " + markers.get(0).getItem(), "Ta bort plats", JOptionPane.OK_CANCEL_OPTION);
         if(result == JOptionPane.OK_OPTION){
-          map.getGraph().remove(markers.get(0).getItem());
           map.removeMarker(markers.get(0));
           map.revalidate();
           map.repaint();
