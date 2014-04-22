@@ -5,6 +5,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -20,7 +22,6 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
   private File file;
   private ImageIcon bild = new ImageIcon();
   MapPanel map;
-  private Marker<City> m1, m2;
 
   public MainWindow(){
     super("PathFinder");
@@ -151,6 +152,11 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     if (e.getSource() == findPathMI || e.getSource() == findPathB){
     }
     if (e.getSource() == showConnectionMI || e.getSource() == showConnectionB){
+      ArrayList<Marker<City>> markers = map.getSelectedMarkers();
+      
+      Edge<City> connection = graph.getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
+      JOptionPane.showMessageDialog(null, "Från " + markers.get(0).getItem() + " " + connection);
+      
     }
     if (e.getSource() == newPlaceMI || e.getSource() == newPlaceB){
       map.setActive(true);
@@ -166,10 +172,11 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
   }
   
 private void showNewConnectionForm(NewConnectionForm form){
+  ArrayList<Marker<City>> markers = map.getSelectedMarkers();
   int result = JOptionPane.showConfirmDialog(null, form, "Ny förbindelse", JOptionPane.OK_CANCEL_OPTION, JOptionPane.NO_OPTION);
   if(result == JOptionPane.OK_OPTION){
     if(form.isValidForm())    
-      graph.connect(m1.getItem(), m2.getItem(), form.getName(), form.getTime());
+      graph.connect(markers.get(0).getItem(), markers.get(1).getItem(), form.getName(), form.getTime());
     else
       showNewConnectionForm(form);
   }

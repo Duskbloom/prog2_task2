@@ -75,7 +75,6 @@ public class Marker<T> extends JPanel implements MouseListener{
 
   @Override
   public void mouseClicked(MouseEvent event){
-    System.out.println("Inside the marker");
     if(markerListener != null){
       markerListener.markerClicked(this);
     }

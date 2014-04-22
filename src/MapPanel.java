@@ -1,11 +1,10 @@
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
@@ -13,6 +12,7 @@ public class MapPanel extends JPanel implements MouseListener, MarkerListener<Ci
   private ImageIcon bild;
   private boolean active = false;
   private MapClickedListener mapClickedListener;
+  private ArrayList<Marker<City>> selectedMarkers = new ArrayList<Marker<City>>(2);
   
   
   public MapPanel(ImageIcon bild){
@@ -35,6 +35,10 @@ public class MapPanel extends JPanel implements MouseListener, MarkerListener<Ci
     this.mapClickedListener = mapClickedListener;
   }
  
+  public ArrayList<Marker<City>> getSelectedMarkers() {
+    return selectedMarkers;
+  }
+
   protected void paintComponent(Graphics g){
     super.paintComponent(g);
     g.drawImage(bild.getImage(), 0, 0, getWidth(), getHeight(), this);
@@ -90,8 +94,15 @@ public class MapPanel extends JPanel implements MouseListener, MarkerListener<Ci
 
   @Override
   public void markerClicked(Marker<City> marker){
-    System.out.println("HELLO");
-    marker.setActive(!marker.isActive());
-  }
-  
+    if(!marker.isActive()){
+      if(selectedMarkers.size() < 2){
+        selectedMarkers.add(marker);
+        marker.setActive(!marker.isActive());
+      }
+    }
+    else{
+      selectedMarkers.remove(marker);
+      marker.setActive(!marker.isActive());
+    }    
+  }  
 }

@@ -1,5 +1,5 @@
 package graphs;
-class Edge<T> {
+public class Edge<T> {
   private T dest;
   private String namn;
   private int weight;
