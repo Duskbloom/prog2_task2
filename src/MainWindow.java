@@ -153,10 +153,12 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     }
     if (e.getSource() == showConnectionMI || e.getSource() == showConnectionB){
       ArrayList<Marker<City>> markers = map.getSelectedMarkers();
-      
-      Edge<City> connection = graph.getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
-      JOptionPane.showMessageDialog(null, "Från " + markers.get(0).getItem() + " " + connection);
-      
+      if(markers.size() == 2){
+        Edge<City> connection = graph.getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
+        JOptionPane.showMessageDialog(null, "Från " + markers.get(0).getItem() + " " + connection);
+      }
+      else
+        JOptionPane.showMessageDialog(null, "Du måste välja två platser");
     }
     if (e.getSource() == newPlaceMI || e.getSource() == newPlaceB){
       map.setActive(true);

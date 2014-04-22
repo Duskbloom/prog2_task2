@@ -1,3 +1,5 @@
+import graphs.Graph;
+
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -5,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
@@ -13,6 +16,7 @@ public class MapPanel extends JPanel implements MouseListener, MarkerListener<Ci
   private boolean active = false;
   private MapClickedListener mapClickedListener;
   private ArrayList<Marker<City>> selectedMarkers = new ArrayList<Marker<City>>(2);
+  private Graph<City> graph;
   
   
   public MapPanel(ImageIcon bild){
@@ -33,6 +37,10 @@ public class MapPanel extends JPanel implements MouseListener, MarkerListener<Ci
   }
   public void setMapClickedListener(MapClickedListener mapClickedListener) {
     this.mapClickedListener = mapClickedListener;
+  }
+  
+  public Graph<City> getGraph(){
+    return graph;
   }
  
   public ArrayList<Marker<City>> getSelectedMarkers() {
