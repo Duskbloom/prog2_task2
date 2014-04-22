@@ -11,6 +11,10 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class MainWindow extends JFrame implements ActionListener, MapClickedListener{
 
+  /**
+   * 
+   */
+  private static final long serialVersionUID = -8555779389804914547L;
   private JMenuItem newMenuItem, openMenuItem, saveMenuItem, saveAsMenuItem, exitMenuItem, findPathMI, showConnectionMI, newPlaceMI, newConnectionMI, changeConnectionMI;
   private JButton findPathB, showConnectionB, newPlaceB, newConnectionB, changeConnectionB;
   private final JFileChooser fc = new JFileChooser();

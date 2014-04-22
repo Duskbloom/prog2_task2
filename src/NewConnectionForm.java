@@ -2,6 +2,10 @@ import javax.swing.*;
 
 public class NewConnectionForm extends Form {
 
+  /**
+   * 
+   */
+  private static final long serialVersionUID = -2516318575209397812L;
   private JTextField nameField = new JTextField(10);
   private JTextField timeField = new JTextField(4);
   

@@ -16,6 +16,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 public class MapPanel extends JPanel implements MouseListener, MarkerListener<City> {
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 7956298536592388950L;
   private ImageIcon bild;
   private boolean active = false;
   private MapClickedListener mapClickedListener;
