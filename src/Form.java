@@ -1,6 +1,11 @@
 import javax.swing.*;
 
 abstract class Form extends JPanel{
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 8539110994206508820L;
+
   protected boolean isValidInteger(String input){
     try{
       Integer.parseInt(input);

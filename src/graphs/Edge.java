@@ -1,5 +1,12 @@
 package graphs;
-public class Edge<T> {
+
+import java.io.Serializable;
+
+public class Edge<T> implements Serializable{
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 9124562038203273412L;
   private T dest;
   private String name;
   private int weight;

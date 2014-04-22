@@ -1,7 +1,8 @@
 package graphs;
+import java.io.Serializable;
 import java.util.*;
 
-public interface Graph<T>{
+public interface Graph<T> extends Serializable{
   public void add(T item);
   public void connect(T from, T to, String name, int weight);
   public List<T> getNodes();

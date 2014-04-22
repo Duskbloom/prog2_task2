@@ -2,6 +2,10 @@ package graphs;
 import java.util.*;
 
 public class ListGraph<T> implements Graph<T> {
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 7206624012985749434L;
   private Map<T, List<Edge<T>>> data = new HashMap<T, List<Edge<T>>>();
 
   public void add(T item){
