@@ -172,14 +172,13 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     }
 
     if (e.getSource() == findPathMI || e.getSource() == findPathB){
-      String str = "";
+      int time = 0;
       ArrayList<Marker<City>> markers = map.getSelectedMarkers();
       if(markers.size() == 2){
         List<Edge<City>> connection = map.getGraph().getAnyPath(markers.get(0).getItem(), markers.get(1).getItem());
-        for(Edge<City> edge : connection){
-          str += connection + "\n";
-        }
-        JOptionPane.showMessageDialog(null, "Från " + markers.get(0).getItem() + " " + str);
+        for(Edge<City> edge : connection)
+          time += edge.getWeight();
+        JOptionPane.showMessageDialog(null, "Från " + markers.get(0).getItem() + " " + connection + "\nTotal tid: " + time);
       }
       else
         JOptionPane.showMessageDialog(null, "Du måste välja två platser");
