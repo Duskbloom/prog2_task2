@@ -101,14 +101,17 @@ public class ListGraph<T> implements Graph<T> {
     dfs2(from, null, besökta, via);
     List<Edge<T>> vägen = new ArrayList<Edge<T>>();
     T where = to;
-    while(!where.equals(from)){
-      T whereFrom = via.get(where);
-      Edge<T> e = getEdgeBetween(whereFrom, where);
-      vägen.add(e);
-      where = whereFrom;
+    if(via.get(where) != null){
+      while(!where.equals(from)){
+        T whereFrom = via.get(where);
+        Edge<T> e = getEdgeBetween(whereFrom, where);
+        vägen.add(e);
+        where = whereFrom;
+      }
+      Collections.reverse(vägen);
+      return vägen;
     }
-    Collections.reverse(vägen);
-    return vägen;
+    return null;
   }
 
   public Edge<T> getEdgeBetween(T from, T to){
