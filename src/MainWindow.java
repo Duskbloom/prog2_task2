@@ -6,6 +6,8 @@ import java.awt.Component;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -170,6 +172,17 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     }
 
     if (e.getSource() == findPathMI || e.getSource() == findPathB){
+      String str = "";
+      ArrayList<Marker<City>> markers = map.getSelectedMarkers();
+      if(markers.size() == 2){
+        List<Edge<City>> connection = map.getGraph().getAnyPath(markers.get(0).getItem(), markers.get(1).getItem());
+        for(Edge<City> edge : connection){
+          str += connection + "\n";
+        }
+        JOptionPane.showMessageDialog(null, "Från " + markers.get(0).getItem() + " " + str);
+      }
+      else
+        JOptionPane.showMessageDialog(null, "Du måste välja två platser");
     }
     if (e.getSource() == showConnectionMI || e.getSource() == showConnectionB){
       ArrayList<Marker<City>> markers = map.getSelectedMarkers();
