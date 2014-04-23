@@ -130,6 +130,18 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     if (e.getSource() == saveAsMenuItem){
       int returnVal = fc.showSaveDialog(this);
     }
+    if (e.getSource() == showConnectionMI || e.getSource() == showConnectionB){
+        ArrayList<Marker<City>> markers = map.getSelectedMarkers();
+        if(markers.size() == 2){
+          Edge<City> connection = map.getGraph().getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
+          if(connection != null)
+            JOptionPane.showMessageDialog(null, "Från " + markers.get(0).getItem() + " " + connection);
+          else
+            JOptionPane.showMessageDialog(null, "Det finns ingen förbindelse mellan platserna.");
+        }
+        else
+          JOptionPane.showMessageDialog(null, "Du måste välja två platser");
+    }
     if (e.getSource() == exitMenuItem){
       System.exit(0);
     }
