@@ -286,6 +286,8 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     if(markers.size() == 2){
       Edge<City> connection = map.getGraph().getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
       if(connection != null){
+        form.nameUneditable();
+
         form.setNameField(connection.getNamn());
         form.setTimeField(connection.getWeight());
         showChangeConnectionForm(form);
@@ -334,6 +336,9 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
       Marker<City> m = new Marker<City>(x, y, stad);
       map.getGraph().add(stad);
       map.addMarker(m);
+    }else{
+      JOptionPane.showMessageDialog(null, "Du måste ha ett namn");
+      mapClicked(x,y);
     }
   }
 
