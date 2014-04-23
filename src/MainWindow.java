@@ -211,7 +211,6 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
   }
 
   private void findPath(){
-    int time = 0;
     ArrayList<Marker<City>> markers = map.getSelectedMarkers();
     if(markers.size() == 2){
       List<Edge<City>> connection = map.getGraph().getAnyPath(markers.get(0).getItem(), markers.get(1).getItem());
