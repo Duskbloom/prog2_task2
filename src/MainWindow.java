@@ -206,13 +206,25 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
       if(connection == null)
         JOptionPane.showMessageDialog(null, "Det finns ingen väg mellan platserna.");
       else{
-        for(Edge<City> edge : connection)
-          time += edge.getWeight();
-        JOptionPane.showMessageDialog(null, "Från " + markers.get(0).getItem() + " " + connection + "\nTotal tid: " + time);
+        printPath(markers.get(0).getItem(), connection);
       }
     }
     else
       JOptionPane.showMessageDialog(null, "Du måste välja två platser");
+  }
+  private void printPath(City from, List<Edge<City>> edges){
+    int time = 0;
+    String output = "Från " + from;
+    for(int i = 0; i < edges.size(); i++){
+      time +=  edges.get(i).getWeight();
+      if(i == 0){
+        output += " med " + edges.get(i).getNamn() + " till " + edges.get(i).getDestination().getNamn() + "\n";
+      } else {
+        output += "Från " + edges.get(i - 1).getDestination().getNamn() + " med " + edges.get(i).getNamn() + " till " + edges.get(i).getDestination().getNamn() + "\n";
+      }
+    }
+    output += "Total tid: " + time;
+    JOptionPane.showMessageDialog(null, output);
   }
   private void showNewConnectionForm(NewConnectionForm form){
     ArrayList<Marker<City>> markers = map.getSelectedMarkers();
