@@ -4,6 +4,10 @@ import graphs.*;
 import javax.swing.ImageIcon;
 
 public class StorageObject implements Serializable{
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 8441284427169268949L;
   private ImageIcon background;
   private Graph<City> graph;
   private ArrayList<MarkerData<City>> markerData;
