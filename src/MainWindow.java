@@ -40,7 +40,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
 
   private JPanel buildButtonPanel() {
     JPanel panel = new JPanel();
-    
+
     findPathB = new JButton("Hitta väg");
     newConnectionB = new JButton("Ny förbindelse");
     showConnectionB = new JButton("Visa förbindelse");
@@ -119,147 +119,97 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
 
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == newMenuItem){
-      fc.setFileFilter(imageFilter);
-      int answer = fc.showOpenDialog(MainWindow.this);
-      if(answer != JFileChooser.APPROVE_OPTION)
-        return;
-      bild = new ImageIcon(fc.getSelectedFile().getAbsolutePath());
-      if(map!=null)
-        remove(map);
-      map = new MapPanel(bild);
-      map.setMapClickedListener(this);
-      add(map);
-      validate();
-      pack();
-      setLocationRelativeTo(null);
+      newMap();
     }
     if (e.getSource() == openMenuItem){
-      fc.setFileFilter(mapFilter);
-      int answer = fc.showOpenDialog(MainWindow.this);
-      if(answer != JFileChooser.APPROVE_OPTION)
-        return;
-      file = fc.getSelectedFile();//test
-      StorageObject data  = Storage.<StorageObject>load(file);
-      if(map!=null)
-        remove(map);
-      map = new MapPanel(data.getBackground(), data.getGraph());
-      map.setMapClickedListener(this);
-      for(Marker<City> m: data.getMarkers()){
-        map.addMarker(m);
-      }
-      add(map);
-      validate();
-      pack();
-      setLocationRelativeTo(null);
+      openMap();
     }
     if (e.getSource() == saveMenuItem){
-      fc.setFileFilter(mapFilter);
-      int answer = fc.showSaveDialog(MainWindow.this);
-      if(answer != JFileChooser.APPROVE_OPTION)
-        return;
-      Storage.save(new StorageObject(map.getMap(), map.getGraph(), map.getMarkers()), fc.getSelectedFile());
+      saveMap();
     }
     if (e.getSource() == saveAsMenuItem){
       int returnVal = fc.showSaveDialog(this);
     }
     if (e.getSource() == exitMenuItem){
-      /* if(){
-        int answer = JOptionPane.showConfirmDialog(this, "Du har osparade ändringar. Vill du spara?", "Varning", JOptionPane.YES_NO_CANCEL_OPTION);
-        if(answer == JOptionPane.YES_OPTION)
-          save(file);
-      }*/
       System.exit(0);
     }
-
     if (e.getSource() == findPathMI || e.getSource() == findPathB){
-      int time = 0;
-      ArrayList<Marker<City>> markers = map.getSelectedMarkers();
-      if(markers.size() == 2){
-        List<Edge<City>> connection = map.getGraph().getAnyPath(markers.get(0).getItem(), markers.get(1).getItem());
-        for(Edge<City> edge : connection)
-          time += edge.getWeight();
-        JOptionPane.showMessageDialog(null, "Från " + markers.get(0).getItem() + " " + connection + "\nTotal tid: " + time);
-      }
-      else
-        JOptionPane.showMessageDialog(null, "Du måste välja två platser");
-    }
-    if (e.getSource() == showConnectionMI || e.getSource() == showConnectionB){
-      ArrayList<Marker<City>> markers = map.getSelectedMarkers();
-      if(markers.size() == 2){
-        Edge<City> connection = map.getGraph().getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
-        if(connection != null)
-          JOptionPane.showMessageDialog(null, "Från " + markers.get(0).getItem() + " " + connection);
-        else
-          JOptionPane.showMessageDialog(null, "Det finns ingen förbindelse mellan platserna.");
-      }
-      else
-        JOptionPane.showMessageDialog(null, "Du måste välja två platser");
+      findPath();
     }
     if (e.getSource() == newPlaceMI || e.getSource() == newPlaceB){
       map.setActive(true);
     }
     if (e.getSource() == newConnectionMI || e.getSource() == newConnectionB){
-      NewConnectionForm form = new NewConnectionForm();
-      ArrayList<Marker<City>> markers = map.getSelectedMarkers();
-      if(markers.size() == 2){
-        Edge<City> connection = map.getGraph().getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
-        if(connection == null){
-          showNewConnectionForm(form);
-        }
-        else
-          JOptionPane.showMessageDialog(null, "Det finns redan en förbindelse mellan platserna.");
-      }
-      else
-        JOptionPane.showMessageDialog(null, "Du måste välja två platser");
-
+      newConnection();
     }
-    //
     if (e.getSource() == changeConnectionMI || e.getSource() == changeConnectionB){
-      NewConnectionForm form = new NewConnectionForm();
-      ArrayList<Marker<City>> markers = map.getSelectedMarkers();
-      if(markers.size() == 2){
-        Edge<City> connection = map.getGraph().getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
-        if(connection != null){
-          form.setNameField(connection.getNamn());
-          form.setTimeField(connection.getWeight());
-          showChangeConnectionForm(form);
-        }
-        else
-          JOptionPane.showMessageDialog(null, "Det finns ingen förbindelse mellan platserna.");
-      }
-      else
-        JOptionPane.showMessageDialog(null, "Du måste välja två platser");
+      changeConnection();
     }
     if (e.getSource() == removeConnectionB || e.getSource() == removeConnectionMI){
-      ArrayList<Marker<City>> markers = map.getSelectedMarkers();
-      if(markers.size() == 2){
-        Edge<City> connection = map.getGraph().getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
-        if(connection != null){
-          map.getGraph().disconnect(markers.get(0).getItem(), markers.get(1).getItem());
-          map.revalidate();
-          map.repaint();
-        }
-        else
-          JOptionPane.showMessageDialog(null, "Det finns ingen förbindelse mellan platserna.");
-      }
-      else
-        JOptionPane.showMessageDialog(null, "Du måste välja två platser");
+      removeConnection();
     }
-
     if (e.getSource() == removePlaceB || e.getSource() == removePlaceMI){
-      ArrayList<Marker<City>> markers = map.getSelectedMarkers();
-      if(markers.size() == 1){
-        int result = JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort " + markers.get(0).getItem(), "Ta bort plats", JOptionPane.OK_CANCEL_OPTION);
-        if(result == JOptionPane.OK_OPTION){
-          map.removeMarker(markers.get(0));
-          map.revalidate();
-          map.repaint();
-        }
-      }
-
+      removePlace();
     }
   }
 
+  private void newMap(){
+    fc.setFileFilter(imageFilter);
+    int answer = fc.showOpenDialog(MainWindow.this);
+    if(answer != JFileChooser.APPROVE_OPTION)
+      return;
+    bild = new ImageIcon(fc.getSelectedFile().getAbsolutePath());
+    if(map!=null)
+      remove(map);
+    map = new MapPanel(bild);
+    map.setMapClickedListener(this);
+    add(map);
+    validate();
+    pack();
+    setLocationRelativeTo(null);
+
+  }
+
+  private void openMap(){
+    fc.setFileFilter(mapFilter);
+    int answer = fc.showOpenDialog(MainWindow.this);
+    if(answer != JFileChooser.APPROVE_OPTION)
+      return;
+    file = fc.getSelectedFile();//test
+    StorageObject data  = Storage.<StorageObject>load(file);
+    if(map!=null)
+      remove(map);
+    map = new MapPanel(data.getBackground(), data.getGraph());
+    map.setMapClickedListener(this);
+    for(Marker<City> m: data.getMarkers()){
+      map.addMarker(m);
+    }
+    add(map);
+    validate();
+    pack();
+    setLocationRelativeTo(null);
+  }
+
+  private void saveMap(){
+    fc.setFileFilter(mapFilter);
+    int answer = fc.showSaveDialog(MainWindow.this);
+    if(answer != JFileChooser.APPROVE_OPTION)
+      return;
+    Storage.save(new StorageObject(map.getMap(), map.getGraph(), map.getMarkers()), fc.getSelectedFile());
+  }
+
+  private void findPath(){
+    int time = 0;
+    ArrayList<Marker<City>> markers = map.getSelectedMarkers();
+    if(markers.size() == 2){
+      List<Edge<City>> connection = map.getGraph().getAnyPath(markers.get(0).getItem(), markers.get(1).getItem());
+      for(Edge<City> edge : connection)
+        time += edge.getWeight();
+      JOptionPane.showMessageDialog(null, "Från " + markers.get(0).getItem() + " " + connection + "\nTotal tid: " + time);
+    }
+    else
+      JOptionPane.showMessageDialog(null, "Du måste välja två platser");
+  }
   private void showNewConnectionForm(NewConnectionForm form){
     ArrayList<Marker<City>> markers = map.getSelectedMarkers();
     int result = JOptionPane.showConfirmDialog(null, form, "Ny förbindelse", JOptionPane.OK_CANCEL_OPTION, JOptionPane.NO_OPTION);
@@ -284,6 +234,67 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
         map.repaint();
       } else 
         showNewConnectionForm(form);
+    }
+  }
+
+  private void newConnection(){
+    NewConnectionForm form = new NewConnectionForm();
+    ArrayList<Marker<City>> markers = map.getSelectedMarkers();
+    if(markers.size() == 2){
+      Edge<City> connection = map.getGraph().getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
+      if(connection == null){
+        showNewConnectionForm(form);
+      }
+      else
+        JOptionPane.showMessageDialog(null, "Det finns redan en förbindelse mellan platserna.");
+    }
+    else
+      JOptionPane.showMessageDialog(null, "Du måste välja två platser");
+
+  }
+
+  private void changeConnection(){
+    NewConnectionForm form = new NewConnectionForm();
+    ArrayList<Marker<City>> markers = map.getSelectedMarkers();
+    if(markers.size() == 2){
+      Edge<City> connection = map.getGraph().getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
+      if(connection != null){
+        form.setNameField(connection.getNamn());
+        form.setTimeField(connection.getWeight());
+        showChangeConnectionForm(form);
+      }
+      else
+        JOptionPane.showMessageDialog(null, "Det finns ingen förbindelse mellan platserna.");
+    }
+    else
+      JOptionPane.showMessageDialog(null, "Du måste välja två platser");
+  }
+
+  private void removeConnection(){
+    ArrayList<Marker<City>> markers = map.getSelectedMarkers();
+    if(markers.size() == 2){
+      Edge<City> connection = map.getGraph().getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
+      if(connection != null){
+        map.getGraph().disconnect(markers.get(0).getItem(), markers.get(1).getItem());
+        map.revalidate();
+        map.repaint();
+      }
+      else
+        JOptionPane.showMessageDialog(null, "Det finns ingen förbindelse mellan platserna.");
+    }
+    else
+      JOptionPane.showMessageDialog(null, "Du måste välja två platser");
+  }
+
+  private void removePlace(){
+    ArrayList<Marker<City>> markers = map.getSelectedMarkers();
+    if(markers.size() == 1){
+      int result = JOptionPane.showConfirmDialog(null, "Är du säker på att du vill ta bort " + markers.get(0).getItem(), "Ta bort plats", JOptionPane.OK_CANCEL_OPTION);
+      if(result == JOptionPane.OK_OPTION){
+        map.removeMarker(markers.get(0));
+        map.revalidate();
+        map.repaint();
+      }
     }
   }
 
