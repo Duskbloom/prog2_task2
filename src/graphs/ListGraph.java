@@ -35,6 +35,8 @@ public class ListGraph<T> implements Graph<T> {
 
 
   public void disconnect(T from, T to) {
+    if(!data.containsKey(from) || !data.containsKey(to))
+      throw new NoSuchElementException("Element was not found in graph");
     Edge<T> e1 = getEdgeBetween(from, to);
     Edge<T> e2 = getEdgeBetween(to, from);
     List<Edge<T>> fromRoads = data.get(from);
