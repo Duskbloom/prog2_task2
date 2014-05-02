@@ -36,7 +36,15 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     setLocationRelativeTo(null);
     setVisible(true);
     setResizable(false);
-    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+    this.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent e){
+        int answer = checkIfSaved();
+        if(answer != JOptionPane.CANCEL_OPTION)
+          System.exit(0);
+      }
+    });
   }
 
   private JPanel buildButtonPanel() {
