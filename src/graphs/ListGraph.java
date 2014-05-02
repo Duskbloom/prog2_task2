@@ -10,13 +10,12 @@ public class ListGraph<T> implements Graph<T> {
 
   public void add(T item){
     if(!data.containsKey(item))
-      data.put(item, new ArrayList<Edge<T>>() ); //eller throw exception
+      data.put(item, new ArrayList<Edge<T>>() );
   }
 
   public void connect(T from, T to, String name, int weight){
     List<Edge<T>> fromRoads = data.get(from);
     List<Edge<T>> toRoads = data.get(to);
-
     if(fromRoads == null || toRoads == null)
       throw new NoSuchElementException("The given node does not exist in the graph");
     if(weight<0)
@@ -150,11 +149,11 @@ public class ListGraph<T> implements Graph<T> {
 
   public void setConnectionWeight(T from, T to, int weight){
     if(!data.keySet().contains(from) && !data.keySet().contains(to)){
-      throw new NoSuchElementException("En eller båda av noderna existerar inte i grafen");
+      throw new NoSuchElementException("One of the nodes does not exist in the graph");
     }
 
     if(weight < 0){
-      throw new IllegalArgumentException("vikt får inte vara mindre än 0");
+      throw new IllegalArgumentException("Weight can´t be less than 0");
     }
 
     Edge<T> edge1 = getEdgeBetween(from, to);
@@ -163,18 +162,18 @@ public class ListGraph<T> implements Graph<T> {
       edge1.setWeight(weight);
       edge2.setWeight(weight);
     }else{
-      throw new NoSuchElementException("Det existerar ingen anslutning mellan städerna");
+      throw new NoSuchElementException("No connection exists between the nodes");
     }
   }
 
   @Override
   public void setConnectionName(T from, T to, String name) {
     if(!data.keySet().contains(from) && !data.keySet().contains(to)){
-      throw new NoSuchElementException("En eller båda av noderna existerar inte i grafen");
+      throw new NoSuchElementException("One of the nodes does not exist in the graph");
     }
 
     if(name == null){
-      throw new IllegalArgumentException("Du måste ha ett namn");
+      throw new IllegalArgumentException("You must enter a name");
     }
 
     Edge<T> edge1 = getEdgeBetween(from, to);
@@ -183,7 +182,7 @@ public class ListGraph<T> implements Graph<T> {
       edge1.setName(name);
       edge2.setName(name);
     }else{
-      throw new NoSuchElementException("Det existerar ingen anslutning mellan städerna");
+      throw new NoSuchElementException("No connection exists between the nodes");
     }
 
   }
