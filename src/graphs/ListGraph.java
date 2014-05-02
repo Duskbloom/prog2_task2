@@ -49,16 +49,6 @@ public class ListGraph<T> implements Graph<T> {
       for(Edge<T> edge: edges){
         disconnect(item, edge.getDestination());
       }
-      //remove all connections
-      /*Collection<List<Edge<T>>> lists = data.values(); 
-      Iterator<List<Edge<T>>> it = lists.iterator();
-      while(it.hasNext()){
-        List<Edge<T>> list = (List<Edge<T>>) it.next();
-        for(Edge<T> e : list)
-          if(e.getDestination().equals(item))
-            it.remove();
-      }*/
-      //remove node
       data.remove(item); 
     }
 
