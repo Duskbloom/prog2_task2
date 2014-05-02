@@ -223,7 +223,10 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
   }
   
   private void saveMap(){
-    Storage.save(new StorageObject(map.getMap(), map.getGraph(), map.getMarkers()), fc.getSelectedFile());
+    if(fc.getSelectedFile()!=null)
+      Storage.save(new StorageObject(map.getMap(), map.getGraph(), map.getMarkers()), fc.getSelectedFile());
+    else
+      saveAsMap();
   }
 
   private void saveAsMap(){
