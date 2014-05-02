@@ -211,11 +211,10 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
   }
 
   private void findPath(){
-    int time = 0;
     ArrayList<Marker<City>> markers = map.getSelectedMarkers();
     if(markers.size() == 2){
-      List<Edge<City>> connection = map.getGraph().getAnyPath(markers.get(0).getItem(), markers.get(1).getItem());
-      if(connection == null)
+      List<Edge<City>> connection = map.getGraph().getPath(markers.get(0).getItem(), markers.get(1).getItem());
+      if(connection.size() <= 0)
         JOptionPane.showMessageDialog(null, "Det finns ingen väg mellan platserna.");
       else{
         printPath(markers.get(0).getItem(), connection);
@@ -335,6 +334,9 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
       Marker<City> m = new Marker<City>(x, y, stad);
       map.getGraph().add(stad);
       map.addMarker(m);
+    }else{
+    	JOptionPane.showMessageDialog(null, "Du måste ange ett namn");
+    	mapClicked(x, y);
     }
   }
 
