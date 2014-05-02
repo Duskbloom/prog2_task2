@@ -248,7 +248,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
   private void findPath(){
     ArrayList<Marker<City>> markers = map.getSelectedMarkers();
     if(markers.size() == 2){
-      List<Edge<City>> connection = map.getGraph().getPath(markers.get(0).getItem(), markers.get(1).getItem());
+      List<Edge<City>> connection = GraphMethods.getPath(markers.get(0).getItem(), markers.get(1).getItem(), map.getGraph());
       if(connection.size() <= 0)
         JOptionPane.showMessageDialog(null, "Det finns ingen väg mellan platserna.");
       else{

@@ -65,19 +65,6 @@ public class ListGraph<T> implements Graph<T> {
     return new ArrayList<Edge<T>>(data.get(item));
   }
 
-  private void dfs(T where, Set<T> visited){
-    visited.add(where);
-    for(Edge<T> e : data.get(where))
-      if(!visited.contains(e.getDestination()))
-        dfs(e.getDestination(), visited);
-  }
-
-  public boolean pathExists(T from, T to){
-    Set<T> visited = new HashSet<T>();
-    dfs(from, visited);
-    return visited.contains(to);
-  }
-
   private void dfs2(T where, T fromWhere, Set<T> visited, Map<T, T> via){
     visited.add(where);
     via.put(where, fromWhere);
@@ -103,39 +90,6 @@ public class ListGraph<T> implements Graph<T> {
       return vägen;
     }
     return null;
-  }
-
-  public List<Edge<T>> getPath(T from, T to){
-     return dfs3(from, to, new HashSet<T>());
-  }
-
-  public ArrayList<Edge<T>> dfs3(T where, T to, Set<T> visited){
-	if(where.equals(to))
-		return new ArrayList<Edge<T>>();
-    visited.add(where);
-    ArrayList<Edge<T>> path = new ArrayList<Edge<T>>();
-    TreeMap<Integer, ArrayList<Edge<T>>> paths = new TreeMap<Integer, ArrayList<Edge<T>>>();
-    for(Edge<T> e: data.get(where)){
-      if(!visited.contains(e.getDestination())){
-        ArrayList<Edge<T>> subPath = new ArrayList<Edge<T>>();
-        subPath.add(e);
-        subPath.addAll(dfs3(e.getDestination(), to, new HashSet<T>(visited)));
-        if(subPath.get(subPath.size() - 1).getDestination().equals(to)){
-        	paths.put(getPathLength(subPath, to), subPath);
-        }
-      }
-    }
-    if(!paths.isEmpty())
-    	path.addAll(paths.firstEntry().getValue());
-    return path;
-  }
-
-  private int getPathLength(List<Edge<T>> edges, T to){
-    int length = 0;
-    for(Edge<T> edge: edges){
-      length += edge.getWeight();
-    }
-    return length;
   }
 
   public Edge<T> getEdgeBetween(T from, T to){
