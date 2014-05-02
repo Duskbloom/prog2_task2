@@ -38,6 +38,10 @@ public class NewConnectionForm extends Form {
     return Integer.parseInt(timeField.getText());
   }
   
+  public void nameUneditable(){
+    nameField.setEditable(false);
+  }
+  
   @Override
   public boolean isValidForm() {
     if (!isValidString(nameField.getText())){
