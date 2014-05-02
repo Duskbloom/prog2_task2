@@ -24,6 +24,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
   private FileNameExtensionFilter mapFilter = new FileNameExtensionFilter("Kartor", "map");
   private File file;
   private ImageIcon bild = new ImageIcon();
+  private boolean changesMade = false;
   MapPanel map;
 
   public MainWindow(){
@@ -128,7 +129,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
       saveMap();
     }
     if (e.getSource() == saveAsMenuItem){
-      int returnVal = fc.showSaveDialog(this);
+      saveAsMap();
     }
     if (e.getSource() == showConnectionMI || e.getSource() == showConnectionB){
         ArrayList<Marker<City>> markers = map.getSelectedMarkers();
@@ -143,7 +144,9 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
           JOptionPane.showMessageDialog(null, "Du måste välja två platser");
     }
     if (e.getSource() == exitMenuItem){
-      System.exit(0);
+      int answer = checkIfSaved();
+      if(answer != JOptionPane.CANCEL_OPTION)
+        System.exit(0);
     }
     if (e.getSource() == findPathMI || e.getSource() == findPathB){
       findPath();
@@ -153,15 +156,19 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     }
     if (e.getSource() == newConnectionMI || e.getSource() == newConnectionB){
       newConnection();
+      changesMade = true;
     }
     if (e.getSource() == changeConnectionMI || e.getSource() == changeConnectionB){
       changeConnection();
+      changesMade = true;
     }
     if (e.getSource() == removeConnectionB || e.getSource() == removeConnectionMI){
       removeConnection();
+      changesMade = true;
     }
     if (e.getSource() == removePlaceB || e.getSource() == removePlaceMI){
       removePlace();
+      changesMade = true;
     }
   }
 
@@ -183,26 +190,43 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
   }
 
   private void openMap(){
-    fc.setFileFilter(mapFilter);
-    int answer = fc.showOpenDialog(MainWindow.this);
-    if(answer != JFileChooser.APPROVE_OPTION)
-      return;
-    file = fc.getSelectedFile();
-    StorageObject data  = Storage.<StorageObject>load(file);
-    if(map!=null)
-      remove(map);
-    map = new MapPanel(data.getBackground(), data.getGraph());
-    map.setMapClickedListener(this);
-    for(Marker<City> m: data.getMarkers()){
-      map.addMarker(m);
+    int saveAnswer = checkIfSaved();
+    if(saveAnswer != JOptionPane.CANCEL_OPTION){
+      fc.setFileFilter(mapFilter);
+      int answer = fc.showOpenDialog(MainWindow.this);
+      if(answer != JFileChooser.APPROVE_OPTION)
+        return;
+      file = fc.getSelectedFile();
+      StorageObject data  = Storage.<StorageObject>load(file);
+      if(map!=null)
+        remove(map);
+      map = new MapPanel(data.getBackground(), data.getGraph());
+      map.setMapClickedListener(this);
+      for(Marker<City> m: data.getMarkers()){
+        map.addMarker(m);
+      }
+      add(map);
+      validate();
+      pack();
+      setLocationRelativeTo(null);
     }
-    add(map);
-    validate();
-    pack();
-    setLocationRelativeTo(null);
+  }
+  
+  private int checkIfSaved(){
+    if(map.getMap().getImage()!=null && changesMade == true){
+      int answer = JOptionPane.showConfirmDialog(null, "Du har osparade ändringar. Vill du spara dem?");
+      if(answer == JOptionPane.YES_OPTION)
+        saveAsMap();
+      return answer;
+    }
+    return 0;
+  }
+  
+  private void saveMap(){
+    Storage.save(new StorageObject(map.getMap(), map.getGraph(), map.getMarkers()), fc.getSelectedFile());
   }
 
-  private void saveMap(){
+  private void saveAsMap(){
     fc.setFileFilter(mapFilter);
     int answer = fc.showSaveDialog(MainWindow.this);
     if(answer != JFileChooser.APPROVE_OPTION)
@@ -336,6 +360,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
       Marker<City> m = new Marker<City>(x, y, stad);
       map.getGraph().add(stad);
       map.addMarker(m);
+      changesMade = true;
     }else{
       JOptionPane.showMessageDialog(null, "Du måste ha ett namn");
       mapClicked(x,y);
