@@ -276,12 +276,18 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     ArrayList<Marker<City>> markers = map.getSelectedMarkers();
     int result = JOptionPane.showConfirmDialog(null, form, "Ny förbindelse", JOptionPane.OK_CANCEL_OPTION, JOptionPane.NO_OPTION);
     if(result == JOptionPane.OK_OPTION){
-      if(form.isValidForm()){
-        map.getGraph().connect(markers.get(0).getItem(), markers.get(1).getItem(), form.getName(), form.getTime());
-        map.revalidate();
-        map.repaint();
-      } else 
+      try{
+        if(form.isValidForm()){
+          map.getGraph().connect(markers.get(0).getItem(), markers.get(1).getItem(), form.getName(), form.getTime());
+          map.revalidate();
+          map.repaint();
+        } else 
+          showNewConnectionForm(form);
+      }
+      catch(Exception ex){
+        JOptionPane.showMessageDialog(null, "Du måste ange en glitig tid!");
         showNewConnectionForm(form);
+      }
     }
   }
 
@@ -289,13 +295,19 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     ArrayList<Marker<City>> markers = map.getSelectedMarkers();
     int result = JOptionPane.showConfirmDialog(null, form, "Ändra förbindelse", JOptionPane.OK_CANCEL_OPTION, JOptionPane.NO_OPTION);
     if(result == JOptionPane.OK_OPTION){
-      if(form.isValidForm()){
-        map.getGraph().setConnectionName(markers.get(0).getItem(), markers.get(1).getItem(), form.getName());
-        map.getGraph().setConnectionWeight(markers.get(0).getItem(), markers.get(1).getItem(), form.getTime());
-        map.revalidate();
-        map.repaint();
-      } else 
-        showNewConnectionForm(form);
+      try{
+        if(form.isValidForm()){
+          map.getGraph().setConnectionName(markers.get(0).getItem(), markers.get(1).getItem(), form.getName());
+          map.getGraph().setConnectionWeight(markers.get(0).getItem(), markers.get(1).getItem(), form.getTime());
+          map.revalidate();
+          map.repaint();
+        } else 
+        	showChangeConnectionForm(form);
+      }
+      catch(Exception ex){
+        JOptionPane.showMessageDialog(null, "Du måste ange en glitig tid!");
+        showChangeConnectionForm(form);
+      }
     }
   }
 
