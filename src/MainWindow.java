@@ -20,6 +20,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
   private JMenuItem newMenuItem, openMenuItem, saveMenuItem, saveAsMenuItem, exitMenuItem, findPathMI, showConnectionMI, newPlaceMI, newConnectionMI, changeConnectionMI, removeConnectionMI, removePlaceMI;
   private JButton findPathB, showConnectionB, removePlaceB, newPlaceB, newConnectionB, changeConnectionB, removeConnectionB;
   private final JFileChooser fc = new JFileChooser();
+  private final JFileChooser ifc = new JFileChooser();
   private FileNameExtensionFilter imageFilter = new FileNameExtensionFilter("Bilder", "jpg", "png", "gif");
   private FileNameExtensionFilter mapFilter = new FileNameExtensionFilter("Kartor", "map");
   private File file;
@@ -140,16 +141,16 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
       saveAsMap();
     }
     if (e.getSource() == showConnectionMI || e.getSource() == showConnectionB){
-        ArrayList<Marker<City>> markers = map.getSelectedMarkers();
-        if(markers.size() == 2){
-          Edge<City> connection = map.getGraph().getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
-          if(connection != null)
-            JOptionPane.showMessageDialog(null, "Från " + markers.get(0).getItem() + " " + connection);
-          else
-            JOptionPane.showMessageDialog(null, "Det finns ingen förbindelse mellan platserna.");
-        }
+      ArrayList<Marker<City>> markers = map.getSelectedMarkers();
+      if(markers.size() == 2){
+        Edge<City> connection = map.getGraph().getEdgeBetween(markers.get(0).getItem(), markers.get(1).getItem());
+        if(connection != null)
+          JOptionPane.showMessageDialog(null, "Från " + markers.get(0).getItem() + " " + connection);
         else
-          JOptionPane.showMessageDialog(null, "Du måste välja två platser");
+          JOptionPane.showMessageDialog(null, "Det finns ingen förbindelse mellan platserna.");
+      }
+      else
+        JOptionPane.showMessageDialog(null, "Du måste välja två platser");
     }
     if (e.getSource() == exitMenuItem){
       int answer = checkIfSaved();
@@ -181,11 +182,11 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
   }
 
   private void newMap(){
-    fc.setFileFilter(imageFilter);
-    int answer = fc.showOpenDialog(MainWindow.this);
+    ifc.setFileFilter(imageFilter);
+    int answer = ifc.showOpenDialog(MainWindow.this);
     if(answer != JFileChooser.APPROVE_OPTION)
       return;
-    bild = new ImageIcon(fc.getSelectedFile().getAbsolutePath());
+    bild = new ImageIcon(ifc.getSelectedFile().getAbsolutePath());
     if(map!=null)
       remove(map);
     map = new MapPanel(bild);
@@ -219,7 +220,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
       setLocationRelativeTo(null);
     }
   }
-  
+
   private int checkIfSaved(){
     if(map.getMap().getImage()!=null && changesMade == true){
       int answer = JOptionPane.showConfirmDialog(null, "Du har osparade ändringar. Vill du spara dem?");
@@ -229,10 +230,12 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     }
     return 0;
   }
-  
+
   private void saveMap(){
-    if(fc.getSelectedFile()!=null)
+    if(fc.getSelectedFile() !=null){
       Storage.save(new StorageObject(map.getMap(), map.getGraph(), map.getMarkers()), fc.getSelectedFile());
+      changesMade = false;
+    }
     else
       saveAsMap();
   }
@@ -243,6 +246,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     if(answer != JFileChooser.APPROVE_OPTION)
       return;
     Storage.save(new StorageObject(map.getMap(), map.getGraph(), map.getMarkers()), fc.getSelectedFile());
+    changesMade = false;
   }
 
   private void findPath(){
@@ -302,7 +306,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
           map.revalidate();
           map.repaint();
         } else 
-        	showChangeConnectionForm(form);
+          showChangeConnectionForm(form);
       }
       catch(Exception ex){
         JOptionPane.showMessageDialog(null, "Du måste ange en glitig tid!");
@@ -380,15 +384,15 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     String namn = JOptionPane.showInputDialog("Namn: ");
     if(namn!=null){
       if(!namn.isEmpty()){
-      City stad = new City(namn);
-      Marker<City> m = new Marker<City>(x, y, stad);
-      map.getGraph().add(stad);
-      map.addMarker(m);
-      changesMade = true;
-    }else{
-      JOptionPane.showMessageDialog(null, "Du måste ha ett namn");
-      mapClicked(x,y);
-    }
+        City stad = new City(namn);
+        Marker<City> m = new Marker<City>(x, y, stad);
+        map.getGraph().add(stad);
+        map.addMarker(m);
+        changesMade = true;
+      }else{
+        JOptionPane.showMessageDialog(null, "Du måste ha ett namn");
+        mapClicked(x,y);
+      }
     }
   }
 

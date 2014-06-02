@@ -23,6 +23,8 @@ public class Storage{
 
   public static void save(StorageObject object, File f) {
     try {
+      if(!f.getName().endsWith(".map"))
+        f = new File(f.getAbsolutePath() + ".map");
       FileOutputStream f_out = new FileOutputStream(f);
       ObjectOutputStream o_out = new ObjectOutputStream(f_out);
       o_out.writeObject(object);
