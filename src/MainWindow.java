@@ -378,7 +378,8 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
   @Override
   public void mapClicked(int x, int y) {
     String namn = JOptionPane.showInputDialog("Namn: ");
-      if(namn !=null && !namn.isEmpty()){
+    if(namn!=null){
+      if(!namn.isEmpty()){
       City stad = new City(namn);
       Marker<City> m = new Marker<City>(x, y, stad);
       map.getGraph().add(stad);
@@ -387,6 +388,7 @@ public class MainWindow extends JFrame implements ActionListener, MapClickedList
     }else{
       JOptionPane.showMessageDialog(null, "Du måste ha ett namn");
       mapClicked(x,y);
+    }
     }
   }
 
